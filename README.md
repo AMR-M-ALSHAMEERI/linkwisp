@@ -41,7 +41,7 @@ The Cloudflare service is our own code and is not Bitly, TinyURL, or another sho
 
 ## Install the GitHub release
 
-Release automation and a beginner-friendly offline installer are ready; the first public archive has not been published yet. Each release ZIP includes `INSTALL.html`, which can be opened by double-clicking after extraction. See [docs/INSTALL.md](docs/INSTALL.md) for the same instructions online.
+[LinkWisp v0.1.0](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/v0.1.0) is available from GitHub Releases with a Chrome ZIP and SHA-256 checksum. Each release ZIP includes `INSTALL.html`, which can be opened by double-clicking after extraction. See [docs/INSTALL.md](docs/INSTALL.md) for the same instructions online.
 
 ## Development setup
 

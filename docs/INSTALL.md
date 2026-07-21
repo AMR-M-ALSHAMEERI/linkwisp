@@ -2,7 +2,7 @@
 
 This guide is for users who do not need to read or build the source code.
 
-> The first release ZIP has not been published yet. Release packaging is ready, and these are the installation steps it will use.
+> LinkWisp v0.1.0 is available from the repository's [Releases page](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/v0.1.0). Download the Chrome ZIP, not GitHub's automatically generated source archives.
 
 After extracting the release, double-click the included `INSTALL.html` for an offline copy of the essential setup, update, and troubleshooting instructions.
 
