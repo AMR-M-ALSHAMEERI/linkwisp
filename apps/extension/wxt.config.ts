@@ -5,7 +5,11 @@ export default defineConfig({
     name: "LinkWisp",
     description: "Create clean, shareable short links while keeping history on your device.",
     permissions: ["activeTab", "storage", "contextMenus"],
-    host_permissions: ["https://*.workers.dev/*"],
+    host_permissions: [
+      "http://localhost:8787/*",
+      "http://127.0.0.1:8787/*",
+      "https://*.workers.dev/*"
+    ],
     commands: {
       "shorten-current-tab": {
         suggested_key: {

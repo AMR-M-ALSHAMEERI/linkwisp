@@ -7,7 +7,7 @@
     {
       "binding": "DB",
       "database_name": "linkwisp-db",
-      "database_id": "REPLACE_AFTER_CREATING_D1_DATABASE"
+      "database_id": "00000000-0000-0000-0000-000000000000"
     }
   ]
 }

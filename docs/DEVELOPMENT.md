@@ -40,8 +40,32 @@ Apply the local database migration:
 
 ```bash
 cd apps/worker
-pnpm wrangler d1 migrations apply linkwisp-db --local
+pnpm exec wrangler d1 migrations apply linkwisp-db --local
 ```
+
+Return to the repository root and start the local Worker:
+
+```bash
+cd ../..
+pnpm dev:worker
+```
+
+Leave that terminal open. A successful startup prints a local address, normally `http://localhost:8787`.
+
+Build or rebuild the Chrome extension:
+
+```bash
+pnpm --filter @linkwisp/extension build
+```
+
+Load `apps/extension/.output/chrome-mv3` through `chrome://extensions`, or select **Reload** if LinkWisp is already loaded. In LinkWisp's connection settings enter:
+
+```text
+Worker address: http://127.0.0.1:8787
+Access code: the ACCESS_TOKEN value from apps/worker/.dev.vars
+```
+
+The local Worker must remain running while testing creation and redirects. Local short links work only on the development computer; production deployment later provides a public `workers.dev` address.
 
 ## Cloudflare deployment
 
