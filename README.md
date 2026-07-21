@@ -6,6 +6,10 @@
 
 A local-first browser extension for creating clean, shareable short links through a small service you control. Link history and preferences stay on the user's device; only the short-code-to-destination mapping is stored online so links can redirect from any browser.
 
+<p align="center">
+  <img src="docs/images/install/04-linkwisp-popup.png" width="420" alt="LinkWisp Create view showing destination, custom alias, expiration, and Create and copy controls" />
+</p>
+
 ## Current status
 
 This repository is in active MVP development. The initial release targets Chrome and Chromium browsers through a GitHub Release ZIP.

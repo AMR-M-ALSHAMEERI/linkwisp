@@ -17,6 +17,16 @@ After extracting the release, double-click the included `INSTALL.html` for an of
 7. Pin the extension from Chrome's Extensions menu.
 8. Open the extension and enter the service address and access code provided by the service owner.
 
+After Developer mode is enabled, Chrome displays the **Load unpacked** control:
+
+![Chrome Extensions page with Load unpacked available](images/install/01-load-unpacked.png)
+
+After selecting the folder containing `manifest.json`, confirm that Chrome shows LinkWisp version `0.1.0` and that its switch is enabled:
+
+![LinkWisp version 0.1.0 loaded and enabled in Chrome](images/install/02-linkwisp-loaded.png)
+
+The small orange badge on the icon is Chrome's normal indicator for an unpacked development extension. It is expected for this GitHub ZIP installation method.
+
 The installed extension should display LinkWisp's deep-green linked-loop icon in `chrome://extensions` and, when pinned, in the Chrome toolbar.
 
 ## First setup
@@ -28,6 +38,8 @@ LinkWisp opens a setup guide the first time this version runs. Enter:
 
 Select **Test and finish setup**. LinkWisp checks the address and access code without creating a short link. Successful values are stored only in that browser profile. Select **Not now** to postpone setup; the guide returns next time.
 
+![LinkWisp first-run connection setup with an empty access-code field](images/install/03-first-run-setup.png)
+
 You can reopen the guide later through **Connection settings → Run setup guide**. Use **Test and save** there to verify changed settings before replacing the saved values.
 
 ## Navigate the popup
@@ -37,6 +49,8 @@ You can reopen the guide later through **Connection settings → Run setup guide
 - **Settings** contains connection verification, the setup guide, local backup tools, and an **About LinkWisp** row. Select that row to see the installed version, developer links, project links, and privacy summary in a dialog.
 
 LinkWisp remembers the selected view during the browser session. Success and error notifications float at the top of the visible popup, so you do not need to scroll to find the result of an action.
+
+![LinkWisp Create view](images/install/04-linkwisp-popup.png)
 
 Do not delete or move the extracted folder while the extension is installed.
 
