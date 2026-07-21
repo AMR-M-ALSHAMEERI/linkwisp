@@ -28,10 +28,16 @@ const accessTokenInput = document.querySelector<HTMLInputElement>("#access-token
 const saveSettingsButton = document.querySelector<HTMLButtonElement>("#save-settings")!;
 const createButton = document.querySelector<HTMLButtonElement>("#create-button")!;
 const cleaningMessage = document.querySelector<HTMLElement>("#cleaning-message")!;
-const status = document.querySelector<HTMLElement>("#status")!;
+const toast = document.querySelector<HTMLElement>("#toast")!;
+const toastMessage = document.querySelector<HTMLElement>("#toast-message")!;
+const toastCloseButton = document.querySelector<HTMLButtonElement>("#toast-close")!;
+const navButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-view]")];
+const viewPanels = [...document.querySelectorAll<HTMLElement>("[data-view-panel]")];
+const linksCount = document.querySelector<HTMLElement>("#links-count")!;
 const historyList = document.querySelector<HTMLOListElement>("#history-list")!;
 const clearHistoryButton = document.querySelector<HTMLButtonElement>("#clear-history")!;
 const historySearchInput = document.querySelector<HTMLInputElement>("#history-search")!;
+const showMoreLinksButton = document.querySelector<HTMLButtonElement>("#show-more-links")!;
 const exportBackupButton = document.querySelector<HTMLButtonElement>("#export-backup")!;
 const importBackupButton = document.querySelector<HTMLButtonElement>("#import-backup")!;
 const backupFileInput = document.querySelector<HTMLInputElement>("#backup-file")!;
@@ -52,6 +58,12 @@ const openOnboardingButton = document.querySelector<HTMLButtonElement>("#open-on
 
 let currentQrDataUrl = "";
 let currentQrCode = "";
+let historyExpanded = false;
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+let toastExitTimer: ReturnType<typeof setTimeout> | undefined;
+let brandMarkPromise: Promise<HTMLImageElement> | undefined;
+
+type AppView = "create" | "links" | "settings";
 
 async function loadSettings(): Promise<Settings> {
   const result = await browser.storage.local.get(["serviceUrl", "accessToken"]);
@@ -93,6 +105,7 @@ function actionButton(label: string, action: string, record: LinkRecord, danger 
 
 function renderHistory(records: LinkRecord[]): void {
   historyList.replaceChildren();
+  linksCount.textContent = String(records.length);
   const query = historySearchInput.value.trim().toLocaleLowerCase();
   const visibleRecords = records
     .filter((record) => !query || [record.code, record.shortUrl, record.destination]
@@ -105,10 +118,12 @@ function renderHistory(records: LinkRecord[]): void {
     empty.className = "empty";
     empty.textContent = records.length === 0 ? "No links created yet." : "No matching links.";
     historyList.append(empty);
+    showMoreLinksButton.classList.add("hidden");
     return;
   }
 
-  for (const record of visibleRecords.slice(0, query ? 20 : 8)) {
+  const displayedRecords = query || historyExpanded ? visibleRecords : visibleRecords.slice(0, 8);
+  for (const record of displayedRecords) {
     const item = document.createElement("li");
     const top = document.createElement("div");
     const link = document.createElement("a");
@@ -152,11 +167,105 @@ function renderHistory(records: LinkRecord[]): void {
     item.append(top, destination, metadata, actions);
     historyList.append(item);
   }
+
+  showMoreLinksButton.classList.toggle("hidden", Boolean(query) || visibleRecords.length <= 8);
+  showMoreLinksButton.textContent = historyExpanded
+    ? "Show less"
+    : `Show ${visibleRecords.length - 8} more`;
 }
 
 function setStatus(message: string, kind?: "success" | "error"): void {
-  status.textContent = message;
-  status.dataset.kind = kind || "";
+  if (toastTimer) clearTimeout(toastTimer);
+  if (toastExitTimer) clearTimeout(toastExitTimer);
+  if (!message) {
+    toast.classList.remove("is-visible");
+    toast.classList.add("is-leaving");
+    const exitDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 140;
+    toastExitTimer = setTimeout(() => {
+      toast.hidden = true;
+      toast.classList.remove("is-leaving");
+      toastMessage.textContent = "";
+    }, exitDelay);
+    return;
+  }
+
+  toast.classList.remove("is-visible", "is-leaving");
+  toastMessage.textContent = message;
+  toast.dataset.kind = kind || "info";
+  toast.setAttribute("aria-live", kind === "error" ? "assertive" : "polite");
+  toast.hidden = false;
+  void toast.offsetWidth;
+  toast.classList.add("is-visible");
+
+  if (kind !== "error") {
+    toastTimer = setTimeout(() => setStatus(""), 4000);
+  }
+}
+
+function switchView(view: AppView): void {
+  for (const button of navButtons) {
+    button.setAttribute("aria-selected", String(button.dataset.view === view));
+  }
+  for (const panel of viewPanels) {
+    const selected = panel.dataset.viewPanel === view;
+    panel.classList.toggle("hidden", !selected);
+    panel.classList.remove("panel-enter");
+    if (selected) {
+      void panel.offsetWidth;
+      panel.classList.add("panel-enter");
+    }
+  }
+  void browser.storage.session.set({ activeView: view });
+}
+
+function loadBrandMark(): Promise<HTMLImageElement> {
+  if (!brandMarkPromise) {
+    brandMarkPromise = new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error("The LinkWisp QR mark could not be loaded."));
+      image.src = browser.runtime.getURL("/brand/wisp-link.svg");
+    });
+  }
+  return brandMarkPromise;
+}
+
+function roundedSquare(context: CanvasRenderingContext2D, x: number, y: number, size: number, radius: number): void {
+  context.beginPath();
+  context.moveTo(x + radius, y);
+  context.lineTo(x + size - radius, y);
+  context.quadraticCurveTo(x + size, y, x + size, y + radius);
+  context.lineTo(x + size, y + size - radius);
+  context.quadraticCurveTo(x + size, y + size, x + size - radius, y + size);
+  context.lineTo(x + radius, y + size);
+  context.quadraticCurveTo(x, y + size, x, y + size - radius);
+  context.lineTo(x, y + radius);
+  context.quadraticCurveTo(x, y, x + radius, y);
+  context.closePath();
+}
+
+async function createBrandedQrCode(shortUrl: string): Promise<string> {
+  const canvas = document.createElement("canvas");
+  await QRCode.toCanvas(canvas, shortUrl, {
+    errorCorrectionLevel: "H",
+    margin: 2,
+    width: 320,
+    color: { dark: "#215F42", light: "#F4F7F2" }
+  });
+
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("The QR drawing surface is unavailable.");
+  const plateSize = 58;
+  const platePosition = (canvas.width - plateSize) / 2;
+  context.fillStyle = "#F4F7F2";
+  roundedSquare(context, platePosition, platePosition, plateSize, 12);
+  context.fill();
+
+  const mark = await loadBrandMark();
+  const markSize = 46;
+  const markPosition = (canvas.width - markSize) / 2;
+  context.drawImage(mark, markPosition, markPosition, markSize, markSize);
+  return canvas.toDataURL("image/png");
 }
 
 function candidateSettings(serviceUrl: string, accessToken: string): Settings {
@@ -211,7 +320,7 @@ async function initialize(): Promise<void> {
     loadSettings(),
     loadHistory(),
     browser.tabs.query({ active: true, currentWindow: true }),
-    browser.storage.session.get("pendingDestination"),
+    browser.storage.session.get(["pendingDestination", "activeView"]),
     browser.storage.local.get("onboardingComplete")
   ]);
 
@@ -232,6 +341,10 @@ async function initialize(): Promise<void> {
 
   if (pendingDestination) await browser.storage.session.remove("pendingDestination");
   renderHistory(history);
+  const rememberedView = session.activeView;
+  switchView(pendingDestination || (rememberedView !== "links" && rememberedView !== "settings")
+    ? "create"
+    : rememberedView);
   if (onboarding.onboardingComplete !== true) showOnboarding(settings);
 }
 
@@ -240,6 +353,17 @@ expirationSelect.addEventListener("change", () => {
 });
 
 historySearchInput.addEventListener("input", async () => renderHistory(await loadHistory()));
+
+for (const button of navButtons) {
+  button.addEventListener("click", () => switchView(button.dataset.view as AppView));
+}
+
+toastCloseButton.addEventListener("click", () => setStatus(""));
+
+showMoreLinksButton.addEventListener("click", async () => {
+  historyExpanded = !historyExpanded;
+  renderHistory(await loadHistory());
+});
 
 saveSettingsButton.addEventListener("click", async () => {
   saveSettingsButton.disabled = true;
@@ -333,12 +457,7 @@ historyList.addEventListener("click", async (event) => {
 
     if (button.dataset.action === "qr") {
       const state = linkState(record);
-      currentQrDataUrl = await QRCode.toDataURL(record.shortUrl, {
-        errorCorrectionLevel: "M",
-        margin: 2,
-        width: 320,
-        color: { dark: "#215F42", light: "#F4F7F2" }
-      });
+      currentQrDataUrl = await createBrandedQrCode(record.shortUrl);
       currentQrCode = record.code;
       qrImage.src = currentQrDataUrl;
       qrUrl.textContent = record.shortUrl;
@@ -434,6 +553,7 @@ backupFileInput.addEventListener("change", async () => {
     const current = await loadHistory();
     const result = mergeImportedRecords(current, imported);
     await saveHistory(result.records);
+    switchView("links");
     setStatus(`Import complete: ${result.added} added, ${result.updated} updated.`, "success");
   } catch (error) {
     setStatus(error instanceof Error ? error.message : "The backup could not be imported.", "error");

@@ -15,6 +15,8 @@ This guide is for users who do not need to read or build the source code.
 7. Pin the extension from Chrome's Extensions menu.
 8. Open the extension and enter the service address and access code provided by the service owner.
 
+The installed extension should display LinkWisp's deep-green linked-loop icon in `chrome://extensions` and, when pinned, in the Chrome toolbar.
+
 ## First setup
 
 LinkWisp opens a setup guide the first time this version runs. Enter:
@@ -25,6 +27,14 @@ LinkWisp opens a setup guide the first time this version runs. Enter:
 Select **Test and finish setup**. LinkWisp checks the address and access code without creating a short link. Successful values are stored only in that browser profile. Select **Not now** to postpone setup; the guide returns next time.
 
 You can reopen the guide later through **Connection settings → Run setup guide**. Use **Test and save** there to verify changed settings before replacing the saved values.
+
+## Navigate the popup
+
+- **Create** contains the destination, alias, expiration, and Create and copy action.
+- **Links** contains search, favorites, link management, QR actions, and Show more/less for longer history.
+- **Settings** contains connection verification, the setup guide, and local backup tools.
+
+LinkWisp remembers the selected view during the browser session. Success and error notifications float at the top of the visible popup, so you do not need to scroll to find the result of an action.
 
 Do not delete or move the extracted folder while the extension is installed.
 
@@ -55,7 +65,7 @@ Select the star beside a link to add or remove it from favorites. Favorite links
 
 ## QR codes
 
-Select **QR** on any recent link to display a scannable code for its short URL. Select **Download PNG** to save it as `linkwisp-ALIAS-qr.png`, or **Close** to return to history.
+Select **QR** on any recent link to display a scannable code for its short URL. The center Wisp Link mark is added locally with high QR error correction. Select **Download PNG** to save it as `linkwisp-ALIAS-qr.png`, or **Close** to return to history.
 
 The QR dialog reports the link's current local state. Active links are ready to scan, disabled links will redirect again after being enabled, and expired links currently open an expired-link response. Viewing or downloading the QR remains available in every state because the encoded short URL itself does not change.
 

@@ -137,6 +137,37 @@ This milestone adds `GET /api/session`, so stop and restart the local Worker bef
 
 The authenticated check verifies the Worker and owner access code without inserting, updating, or reading a D1 link record.
 
+## Brand and icon development
+
+The editable source mark is `apps/extension/public/brand/wisp-link.svg`. PNG toolbar and store assets live in `apps/extension/public/icon/` at 16, 32, 48, 96, and 128 pixels. `wxt.config.ts` declares both the extension icons and the toolbar action icons explicitly.
+
+When changing the source mark:
+
+1. Preserve the 128x128 square view box and core deep-green, mint, and cream palette.
+2. Rasterize each required PNG from the same SVG source.
+3. Inspect 128 pixels for clean geometry and 16 pixels for toolbar recognition.
+4. Run the production build and confirm every icon is copied into `.output/chrome-mv3/icon/`.
+5. Reload the unpacked extension and inspect the toolbar, `chrome://extensions`, popup header, onboarding dialog, QR dialog, and long history content.
+
+The popup uses browser-native HTML and CSS. Visual changes must not hide focus indicators, state labels, backup warnings, or onboarding error messages.
+
+## Test popup navigation and notifications
+
+1. Select Create, Links, and Settings and confirm only the correct panels are visible.
+2. Close and reopen the popup and confirm the selected view is remembered for the browser session.
+3. Create enough history records to exceed eight; verify Show more and Show less, then search for a record outside the first eight.
+4. Trigger copy, favorite, disable, backup, and connection actions while scrolled in different views; confirm the floating notification is always visible.
+5. Confirm success notifications dismiss automatically, error notifications remain until dismissed or replaced, and the close button works.
+6. Confirm onboarding errors and active/disabled/expired QR guidance remain inline inside their dialogs.
+7. Generate and download a center-branded QR code, then scan both preview and PNG on more than one phone if available.
+8. Confirm a selected tab changes smoothly and its panel fades upward without delaying interaction.
+9. Confirm toast messages animate in, replacement messages restart cleanly, and automatic/manual dismissal animates out.
+10. Enable the operating system or browser reduced-motion preference and confirm navigation and notifications update without noticeable movement.
+
+The Wisp Link overlay covers only a small central area, keeps the quiet margin untouched, and uses QR error-correction level H. Scanning remains the acceptance criterion; a visually attractive QR that scans unreliably must not be released.
+
+Motion is intentionally limited to 140–180 ms and never controls application logic. The `prefers-reduced-motion: reduce` media query reduces animation and transition durations to effectively instant changes.
+
 ## Cloudflare deployment
 
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">LinkWisp Wisp Link mark</title>
+  <desc id="desc">Two connected rounded link loops ending in a light flowing spark.</desc>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="#215F42"/>
+  <g transform="rotate(-32 64 61)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="22" y="43" width="54" height="34" rx="17" stroke="#F4F7F2" stroke-width="10"/>
+    <rect x="52" y="43" width="54" height="34" rx="17" stroke="#8DE0B2" stroke-width="10"/>
+  </g>
+  <path d="M78 82c11 3 18 9 24 18" fill="none" stroke="#8DE0B2" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="106" cy="105" r="5" fill="#F4F7F2"/>
+</svg>

@@ -7,38 +7,64 @@
   </head>
   <body>
     <main class="shell">
-      <header>
-        <p class="eyebrow">LOCAL-FIRST</p>
-        <h1>Shorten this page</h1>
+      <header class="brand-header">
+        <img class="brand-mark" src="/brand/wisp-link.svg" alt="" />
+        <div>
+          <p class="eyebrow">LOCAL-FIRST LINK TOOL</p>
+          <h1>LinkWisp</h1>
+          <p class="tagline">Clean links, ready to share.</p>
+        </div>
       </header>
 
-      <form id="shorten-form">
-        <label for="destination">Destination</label>
-        <textarea id="destination" name="destination" rows="3" required></textarea>
-        <p id="cleaning-message" class="hint"></p>
+      <nav class="app-nav" aria-label="LinkWisp sections">
+        <button class="nav-button" type="button" data-view="create" aria-selected="true">Create</button>
+        <button class="nav-button" type="button" data-view="links" aria-selected="false">Links <span id="links-count">0</span></button>
+        <button class="nav-button" type="button" data-view="settings" aria-selected="false">Settings</button>
+      </nav>
 
-        <label for="custom-code">Custom alias <span>(optional)</span></label>
-        <input id="custom-code" name="customCode" maxlength="32" placeholder="project-notes" />
-
-        <label for="expiration">Expiration</label>
-        <select id="expiration" name="expiration">
-          <option value="never">Never</option>
-          <option value="hour">In 1 hour</option>
-          <option value="day">In 1 day</option>
-          <option value="week">In 1 week</option>
-          <option value="custom">Custom date</option>
-        </select>
-
-        <div id="custom-expiration-field" class="hidden">
-          <label for="custom-expiration">Custom expiration</label>
-          <input id="custom-expiration" type="datetime-local" />
+      <section class="create-card view-panel" data-view-panel="create" aria-labelledby="create-heading">
+        <div class="card-heading">
+          <h2 id="create-heading">Shorten this page</h2>
+          <span class="privacy-pill">On your device</span>
         </div>
+        <form id="shorten-form">
+          <label for="destination">Destination</label>
+          <textarea id="destination" name="destination" rows="3" required></textarea>
+          <p id="cleaning-message" class="hint"></p>
 
-        <button id="create-button" type="submit">Create and copy</button>
-        <p id="status" class="status" role="status"></p>
-      </form>
+          <label for="custom-code">Custom alias <span>(optional)</span></label>
+          <input id="custom-code" name="customCode" maxlength="32" placeholder="project-notes" />
 
-      <details class="settings">
+          <label for="expiration">Expiration</label>
+          <select id="expiration" name="expiration">
+            <option value="never">Never</option>
+            <option value="hour">In 1 hour</option>
+            <option value="day">In 1 day</option>
+            <option value="week">In 1 week</option>
+            <option value="custom">Custom date</option>
+          </select>
+
+          <div id="custom-expiration-field" class="hidden">
+            <label for="custom-expiration">Custom expiration</label>
+            <input id="custom-expiration" type="datetime-local" />
+          </div>
+
+          <button id="create-button" type="submit">Create and copy</button>
+        </form>
+      </section>
+
+      <section class="history-section view-panel hidden" data-view-panel="links" aria-labelledby="history-heading">
+        <div class="section-heading">
+          <h2 id="history-heading">Your links</h2>
+          <button id="clear-history" class="text-button" type="button">Clear</button>
+        </div>
+        <label for="history-search">Search history</label>
+        <input id="history-search" type="search" placeholder="Alias, short link, or destination" autocomplete="off" />
+        <ol id="history-list" class="history-list"></ol>
+        <button id="show-more-links" class="secondary hidden" type="button">Show more</button>
+      </section>
+
+      <details class="settings view-panel hidden" data-view-panel="settings" open>
         <summary>Connection settings</summary>
         <label for="service-url">Worker address</label>
         <input id="service-url" type="url" placeholder="https://example.workers.dev" />
@@ -51,17 +77,7 @@
         </div>
       </details>
 
-      <section class="history-section" aria-labelledby="history-heading">
-        <div class="section-heading">
-          <h2 id="history-heading">Recent links</h2>
-          <button id="clear-history" class="text-button" type="button">Clear</button>
-        </div>
-        <label for="history-search">Search history</label>
-        <input id="history-search" type="search" placeholder="Alias, short link, or destination" autocomplete="off" />
-        <ol id="history-list" class="history-list"></ol>
-      </section>
-
-      <section class="backup-section" aria-labelledby="backup-heading">
+      <section class="backup-section view-panel hidden" data-view-panel="settings" aria-labelledby="backup-heading">
         <h2 id="backup-heading">Local backup</h2>
         <p class="backup-warning">Backup files contain private link-management keys. Store them securely. Your main access code is never exported.</p>
         <div class="backup-actions">
@@ -71,6 +87,11 @@
         <input id="backup-file" class="hidden" type="file" accept="application/json,.json" />
       </section>
     </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+      <span id="toast-message"></span>
+      <button id="toast-close" type="button" aria-label="Dismiss notification">×</button>
+    </div>
 
     <dialog id="onboarding-dialog" class="onboarding-dialog" aria-labelledby="onboarding-heading">
       <p class="eyebrow">WELCOME TO LINKWISP</p>
@@ -104,6 +125,7 @@
         <button id="close-qr" class="secondary" type="button">Close</button>
       </div>
     </dialog>
+
     <script type="module" src="./main.ts"></script>
   </body>
 </html>

@@ -1,5 +1,9 @@
 # LinkWisp
 
+<p align="center">
+  <img src="apps/extension/public/brand/wisp-link.svg" width="96" height="96" alt="LinkWisp Wisp Link logo" />
+</p>
+
 A local-first browser extension for creating clean, shareable short links through a small service you control. Link history and preferences stay on the user's device; only the short-code-to-destination mapping is stored online so links can redirect from any browser.
 
 ## Current status
@@ -47,6 +51,12 @@ apps/worker/      Cloudflare Worker and D1 migration
 docs/             Public user and contributor documentation
 ```
 
+## Brand assets
+
+The primary **Wisp Link** mark lives at `apps/extension/public/brand/wisp-link.svg`. Chrome-ready PNG icons are provided at 16, 32, 48, 96, and 128 pixels under `apps/extension/public/icon/`.
+
+The core palette is deep green `#215F42`, mint `#8DE0B2`, and soft cream `#F4F7F2`. The icon uses two connected rounded loops with a short flowing trail, representing a link that remains lightweight and easy to share.
+
 ## Privacy model
 
 The extension stores history, notes, favorites, and preferences in browser-local storage. Creating a shareable short link necessarily sends its destination and selected alias to the configured Worker. No click analytics are collected in the MVP.
@@ -58,6 +68,8 @@ History search and favorites run entirely inside the extension. Search terms and
 QR codes are generated locally from completed short URLs. LinkWisp does not send QR contents to an external QR service or store a second QR copy in D1.
 
 First-run onboarding explains the two connection values and verifies the Worker address plus access code without creating a link. Connection settings can run the same test again whenever configuration changes.
+
+The popup is organized into Create, Links, and Settings views. Global actions report through an accessible floating notification, while contextual onboarding and QR state messages remain beside the content they explain.
 
 ## License
 
