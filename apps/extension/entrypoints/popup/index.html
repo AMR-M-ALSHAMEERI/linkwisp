@@ -20,6 +20,20 @@
         <label for="custom-code">Custom alias <span>(optional)</span></label>
         <input id="custom-code" name="customCode" maxlength="32" placeholder="project-notes" />
 
+        <label for="expiration">Expiration</label>
+        <select id="expiration" name="expiration">
+          <option value="never">Never</option>
+          <option value="hour">In 1 hour</option>
+          <option value="day">In 1 day</option>
+          <option value="week">In 1 week</option>
+          <option value="custom">Custom date</option>
+        </select>
+
+        <div id="custom-expiration-field" class="hidden">
+          <label for="custom-expiration">Custom expiration</label>
+          <input id="custom-expiration" type="datetime-local" />
+        </div>
+
         <button id="create-button" type="submit">Create and copy</button>
         <p id="status" class="status" role="status"></p>
       </form>

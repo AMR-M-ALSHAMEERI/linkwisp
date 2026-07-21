@@ -67,6 +67,27 @@ Access code: the ACCESS_TOKEN value from apps/worker/.dev.vars
 
 The local Worker must remain running while testing creation and redirects. Local short links work only on the development computer; production deployment later provides a public `workers.dev` address.
 
+## Test link lifecycle controls
+
+After pulling a version that adds a migration, stop the local Worker with `Ctrl+C`, apply pending migrations, and start it again:
+
+```bash
+cd apps/worker
+pnpm exec wrangler d1 migrations apply linkwisp-db --local
+cd ../..
+pnpm dev:worker
+```
+
+Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions`. Then verify:
+
+1. Create a link with **Never** selected and confirm that it redirects.
+2. Create a link with an expiration and confirm the expiry appears in Recent links.
+3. Select **Edit**, enter another HTTP or HTTPS destination, and confirm the same short URL opens the new destination.
+4. Select **Disable** and confirm the short URL returns `404`; select **Enable** and confirm it redirects again.
+5. Select **Delete**, confirm the warning, and confirm the short URL then returns `404`.
+
+**Clear local history** only removes records from this Chrome profile. It does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
+
 ## Cloudflare deployment
 
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.

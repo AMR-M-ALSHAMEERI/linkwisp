@@ -8,6 +8,15 @@ export interface LinkRecord {
   shortUrl: string;
   destination: string;
   createdAt: string;
+  expiresAt: string | null;
+  disabled: boolean;
+  managementToken?: string;
+}
+
+export interface LinkUpdate {
+  destination?: string;
+  expiresAt?: string | null;
+  disabled?: boolean;
 }
 
 const TRACKING_PARAMETERS = new Set([
@@ -33,10 +42,18 @@ export function cleanUrl(value: string): { url: string; removed: number } {
   return { url: url.toString(), removed };
 }
 
+async function apiResponse<T>(response: Response): Promise<T> {
+  if (response.status === 204) return undefined as T;
+  const body = await response.json() as T & { error?: string };
+  if (!response.ok) throw new Error(body.error || "The link service request failed.");
+  return body;
+}
+
 export async function createShortLink(
   settings: Settings,
   destination: string,
-  customCode?: string
+  customCode?: string,
+  expiresAt?: string | null
 ): Promise<LinkRecord> {
   const serviceUrl = settings.serviceUrl.replace(/\/$/, "");
   const response = await fetch(`${serviceUrl}/api/links`, {
@@ -45,14 +62,38 @@ export async function createShortLink(
       "Authorization": `Bearer ${settings.accessToken}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ destination, customCode: customCode || undefined })
+    body: JSON.stringify({ destination, customCode: customCode || undefined, expiresAt })
   });
 
-  const body = await response.json() as LinkRecord & { error?: string };
-  if (!response.ok) {
-    throw new Error(body.error || "The short link could not be created.");
-  }
-
-  return body;
+  return apiResponse<LinkRecord>(response);
 }
 
+export async function updateShortLink(
+  settings: Settings,
+  record: LinkRecord,
+  update: LinkUpdate
+): Promise<LinkRecord> {
+  const serviceUrl = settings.serviceUrl.replace(/\/$/, "");
+  const response = await fetch(`${serviceUrl}/api/links/${encodeURIComponent(record.code)}`, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `Bearer ${record.managementToken || settings.accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(update)
+  });
+
+  return { ...record, ...await apiResponse<LinkRecord>(response) };
+}
+
+export async function deleteShortLink(settings: Settings, record: LinkRecord): Promise<void> {
+  const serviceUrl = settings.serviceUrl.replace(/\/$/, "");
+  const response = await fetch(`${serviceUrl}/api/links/${encodeURIComponent(record.code)}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${record.managementToken || settings.accessToken}`
+    }
+  });
+
+  await apiResponse<void>(response);
+}

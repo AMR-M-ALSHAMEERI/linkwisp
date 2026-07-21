@@ -16,8 +16,8 @@ h2 { margin: 0; font-size: 15px; }
 label { display: block; margin: 14px 0 6px; font-size: 12px; font-weight: 700; }
 label span { color: #6b756f; font-weight: 500; }
 
-input, textarea, button { width: 100%; font: inherit; }
-input, textarea {
+input, textarea, select, button { width: 100%; font: inherit; }
+input, textarea, select {
   border: 1px solid #cdd7d0;
   border-radius: 10px;
   background: white;
@@ -25,8 +25,9 @@ input, textarea {
   padding: 10px 12px;
   outline: none;
 }
-input:focus, textarea:focus { border-color: #2e7550; box-shadow: 0 0 0 3px #2e75501c; }
+input:focus, textarea:focus, select:focus { border-color: #2e7550; box-shadow: 0 0 0 3px #2e75501c; }
 textarea { resize: vertical; }
+.hidden { display: none; }
 
 button {
   margin-top: 14px;
@@ -55,4 +56,14 @@ button:disabled { cursor: wait; opacity: 0.65; }
 .history-list a { display: block; overflow: hidden; color: #215f42; font-size: 12px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
 .history-list small { display: block; overflow: hidden; margin-top: 3px; color: #717b75; text-overflow: ellipsis; white-space: nowrap; }
 .empty { color: #78817c; font-size: 12px; }
+.history-top { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.history-top a { flex: 1; min-width: 0; }
+.link-state { border-radius: 999px; flex: 0 0 auto; font-size: 9px; font-weight: 800; padding: 3px 6px; text-transform: uppercase; }
+.link-state[data-state="active"] { background: #dff3e7; color: #24623f; }
+.link-state[data-state="disabled"] { background: #f5e6dc; color: #8a4d2b; }
+.link-state[data-state="expired"] { background: #ece8f4; color: #66517b; }
+.history-meta { color: #89918c; font-size: 10px; margin-top: 5px; }
+.history-actions { display: grid; gap: 5px; grid-template-columns: repeat(4, 1fr); margin-top: 9px; }
+.history-actions button { background: #e7eee9; color: #315643; font-size: 10px; margin: 0; padding: 6px 4px; }
+.history-actions button.danger { background: #f7e5e2; color: #9b3931; }
 
