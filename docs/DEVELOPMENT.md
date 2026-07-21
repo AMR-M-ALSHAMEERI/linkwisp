@@ -110,6 +110,18 @@ Backup files are intentionally ignored nowhere by a universal filename rule beca
 
 Both features operate on `browser.storage.local`; they require no Worker or D1 changes.
 
+## Test local QR generation
+
+1. Select **QR** on an active recent link and confirm the dialog shows the correct short URL and a QR image.
+2. Scan the code with a phone and confirm it opens the short URL, which then redirects normally.
+3. Select **Download PNG** and confirm a file named `linkwisp-ALIAS-qr.png` is saved.
+4. Open the PNG and scan it independently.
+5. Disable the mapping, open QR again, and confirm the disabled warning appears while view and download remain available.
+6. Open QR for an expired mapping and confirm the expiration warning includes its date while view and download remain available.
+7. Re-enable the disabled mapping and confirm the same QR image redirects again.
+
+The extension uses the browser build of `qrcode`. Generation occurs locally; this feature adds no host permission, API route, D1 field, or external request.
+
 ## Cloudflare deployment
 
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.

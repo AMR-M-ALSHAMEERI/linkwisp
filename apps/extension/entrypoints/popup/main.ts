@@ -1,4 +1,5 @@
 import "./style.css";
+import QRCode from "qrcode";
 import {
   cleanUrl,
   createShortLink,
@@ -33,6 +34,15 @@ const historySearchInput = document.querySelector<HTMLInputElement>("#history-se
 const exportBackupButton = document.querySelector<HTMLButtonElement>("#export-backup")!;
 const importBackupButton = document.querySelector<HTMLButtonElement>("#import-backup")!;
 const backupFileInput = document.querySelector<HTMLInputElement>("#backup-file")!;
+const qrDialog = document.querySelector<HTMLDialogElement>("#qr-dialog")!;
+const qrUrl = document.querySelector<HTMLElement>("#qr-url")!;
+const qrState = document.querySelector<HTMLElement>("#qr-state")!;
+const qrImage = document.querySelector<HTMLImageElement>("#qr-image")!;
+const downloadQrButton = document.querySelector<HTMLButtonElement>("#download-qr")!;
+const closeQrButton = document.querySelector<HTMLButtonElement>("#close-qr")!;
+
+let currentQrDataUrl = "";
+let currentQrCode = "";
 
 async function loadSettings(): Promise<Settings> {
   const result = await browser.storage.local.get(["serviceUrl", "accessToken"]);
@@ -123,6 +133,7 @@ function renderHistory(records: LinkRecord[]): void {
     actions.className = "history-actions";
     actions.append(
       actionButton("Copy", "copy", record),
+      actionButton("QR", "qr", record),
       actionButton("Edit", "edit", record),
       actionButton(record.disabled ? "Enable" : "Disable", "toggle", record),
       actionButton("Delete", "delete", record, true)
@@ -248,6 +259,27 @@ historyList.addEventListener("click", async (event) => {
       return;
     }
 
+    if (button.dataset.action === "qr") {
+      const state = linkState(record);
+      currentQrDataUrl = await QRCode.toDataURL(record.shortUrl, {
+        errorCorrectionLevel: "M",
+        margin: 2,
+        width: 320,
+        color: { dark: "#215F42", light: "#F4F7F2" }
+      });
+      currentQrCode = record.code;
+      qrImage.src = currentQrDataUrl;
+      qrUrl.textContent = record.shortUrl;
+      qrState.dataset.state = state;
+      qrState.textContent = state === "disabled"
+        ? "This link is disabled. The QR will redirect after you enable the link."
+        : state === "expired"
+          ? `This link expired ${new Date(record.expiresAt!).toLocaleString()}. The QR currently opens an expired-link response.`
+          : "This link is active and ready to scan.";
+      qrDialog.showModal();
+      return;
+    }
+
     if (button.dataset.action === "favorite") {
       const nextHistory = history.map((item) => recordKey(item) === recordKey(record)
         ? { ...item, favorite: !item.favorite }
@@ -337,5 +369,16 @@ backupFileInput.addEventListener("change", async () => {
     backupFileInput.value = "";
   }
 });
+
+downloadQrButton.addEventListener("click", () => {
+  if (!currentQrDataUrl || !currentQrCode) return;
+  const download = document.createElement("a");
+  download.href = currentQrDataUrl;
+  download.download = `linkwisp-${currentQrCode}-qr.png`;
+  download.click();
+  setStatus("QR code downloaded.", "success");
+});
+
+closeQrButton.addEventListener("click", () => qrDialog.close());
 
 void initialize();

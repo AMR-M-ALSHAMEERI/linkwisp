@@ -55,6 +55,8 @@ Link history can be exported as a versioned JSON backup and restored on another 
 
 History search and favorites run entirely inside the extension. Search terms and favorite choices are not sent to the Worker; favorite state is included in local backups.
 
+QR codes are generated locally from completed short URLs. LinkWisp does not send QR contents to an external QR service or store a second QR copy in D1.
+
 ## License
 
 No license has been selected yet. Until one is added, normal copyright restrictions apply.

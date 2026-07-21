@@ -42,6 +42,14 @@ Use **Search history** to find locally stored links by alias, short URL, or dest
 
 Select the star beside a link to add or remove it from favorites. Favorite links appear above other recent links and favorite state is preserved in exported backups.
 
+## QR codes
+
+Select **QR** on any recent link to display a scannable code for its short URL. Select **Download PNG** to save it as `linkwisp-ALIAS-qr.png`, or **Close** to return to history.
+
+The QR dialog reports the link's current local state. Active links are ready to scan, disabled links will redirect again after being enabled, and expired links currently open an expired-link response. Viewing or downloading the QR remains available in every state because the encoded short URL itself does not change.
+
+QR generation happens inside the extension. No link is sent to a QR website or additional online service.
+
 ## Removing
 
 Open `chrome://extensions`, find the extension, and select **Remove**. Removing the extension also removes its local browser storage. It does not automatically delete redirect mappings already created online.

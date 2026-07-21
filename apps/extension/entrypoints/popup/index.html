@@ -68,6 +68,17 @@
         <input id="backup-file" class="hidden" type="file" accept="application/json,.json" />
       </section>
     </main>
+
+    <dialog id="qr-dialog" aria-labelledby="qr-heading">
+      <h2 id="qr-heading">Short-link QR code</h2>
+      <p id="qr-url" class="qr-url"></p>
+      <p id="qr-state" class="qr-state" role="status"></p>
+      <img id="qr-image" alt="QR code for the selected short link" />
+      <div class="qr-actions">
+        <button id="download-qr" type="button">Download PNG</button>
+        <button id="close-qr" class="secondary" type="button">Close</button>
+      </div>
+    </dialog>
     <script type="module" src="./main.ts"></script>
   </body>
 </html>
