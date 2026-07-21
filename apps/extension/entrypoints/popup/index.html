@@ -55,6 +55,16 @@
         </div>
         <ol id="history-list" class="history-list"></ol>
       </section>
+
+      <section class="backup-section" aria-labelledby="backup-heading">
+        <h2 id="backup-heading">Local backup</h2>
+        <p class="backup-warning">Backup files contain private link-management keys. Store them securely. Your main access code is never exported.</p>
+        <div class="backup-actions">
+          <button id="export-backup" class="secondary" type="button">Export</button>
+          <button id="import-backup" class="secondary" type="button">Import</button>
+        </div>
+        <input id="backup-file" class="hidden" type="file" accept="application/json,.json" />
+      </section>
     </main>
     <script type="module" src="./main.ts"></script>
   </body>

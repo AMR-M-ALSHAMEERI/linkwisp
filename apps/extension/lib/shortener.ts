@@ -11,6 +11,7 @@ export interface LinkRecord {
   expiresAt: string | null;
   disabled: boolean;
   managementToken?: string;
+  serviceUrl: string;
 }
 
 export interface LinkUpdate {
@@ -65,7 +66,7 @@ export async function createShortLink(
     body: JSON.stringify({ destination, customCode: customCode || undefined, expiresAt })
   });
 
-  return apiResponse<LinkRecord>(response);
+  return { ...await apiResponse<Omit<LinkRecord, "serviceUrl">>(response), serviceUrl };
 }
 
 export async function updateShortLink(
@@ -73,7 +74,7 @@ export async function updateShortLink(
   record: LinkRecord,
   update: LinkUpdate
 ): Promise<LinkRecord> {
-  const serviceUrl = settings.serviceUrl.replace(/\/$/, "");
+  const serviceUrl = (record.serviceUrl || settings.serviceUrl).replace(/\/$/, "");
   const response = await fetch(`${serviceUrl}/api/links/${encodeURIComponent(record.code)}`, {
     method: "PATCH",
     headers: {
@@ -87,7 +88,7 @@ export async function updateShortLink(
 }
 
 export async function deleteShortLink(settings: Settings, record: LinkRecord): Promise<void> {
-  const serviceUrl = settings.serviceUrl.replace(/\/$/, "");
+  const serviceUrl = (record.serviceUrl || settings.serviceUrl).replace(/\/$/, "");
   const response = await fetch(`${serviceUrl}/api/links/${encodeURIComponent(record.code)}`, {
     method: "DELETE",
     headers: {

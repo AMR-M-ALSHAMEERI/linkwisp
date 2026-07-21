@@ -88,6 +88,17 @@ Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions
 
 **Clear local history** only removes records from this Chrome profile. It does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
 
+## Test local backup and restore
+
+1. Create at least two links, then select **Export** under Local backup.
+2. Open the downloaded JSON only to inspect it. Confirm it has `format`, `version`, `exportedAt`, and `links` fields and does not contain the main access code.
+3. Keep the backup, clear local history, and confirm the online short links still redirect.
+4. Select **Import**, choose the backup, approve the confirmation, and confirm the history returns.
+5. Edit or disable one restored link to prove its per-link management key was preserved.
+6. Try importing an unrelated JSON file and confirm LinkWisp rejects it without changing history.
+
+Backup files are intentionally ignored nowhere by a universal filename rule because users may choose any download folder. Treat them as secrets and never place them in the repository.
+
 ## Cloudflare deployment
 
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.

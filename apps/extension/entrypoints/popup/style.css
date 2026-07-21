@@ -67,3 +67,8 @@ button:disabled { cursor: wait; opacity: 0.65; }
 .history-actions button { background: #e7eee9; color: #315643; font-size: 10px; margin: 0; padding: 6px 4px; }
 .history-actions button.danger { background: #f7e5e2; color: #9b3931; }
 
+.backup-section { margin-top: 18px; border-top: 1px solid #d9e0db; padding-top: 16px; }
+.backup-warning { margin: 7px 0 0; color: #706a52; font-size: 10px; line-height: 1.45; }
+.backup-actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+.backup-actions button { margin-top: 10px; }
+

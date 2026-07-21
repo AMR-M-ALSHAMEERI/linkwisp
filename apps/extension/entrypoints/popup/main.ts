@@ -7,6 +7,13 @@ import {
   type LinkRecord,
   type Settings
 } from "../../lib/shortener";
+import {
+  createBackup,
+  mergeImportedRecords,
+  normalizeStoredRecord,
+  parseBackup,
+  recordKey
+} from "../../lib/backup";
 
 const form = document.querySelector<HTMLFormElement>("#shorten-form")!;
 const destinationInput = document.querySelector<HTMLTextAreaElement>("#destination")!;
@@ -22,6 +29,9 @@ const cleaningMessage = document.querySelector<HTMLElement>("#cleaning-message")
 const status = document.querySelector<HTMLElement>("#status")!;
 const historyList = document.querySelector<HTMLOListElement>("#history-list")!;
 const clearHistoryButton = document.querySelector<HTMLButtonElement>("#clear-history")!;
+const exportBackupButton = document.querySelector<HTMLButtonElement>("#export-backup")!;
+const importBackupButton = document.querySelector<HTMLButtonElement>("#import-backup")!;
+const backupFileInput = document.querySelector<HTMLInputElement>("#backup-file")!;
 
 async function loadSettings(): Promise<Settings> {
   const result = await browser.storage.local.get(["serviceUrl", "accessToken"]);
@@ -31,23 +41,13 @@ async function loadSettings(): Promise<Settings> {
   };
 }
 
-function normalizeRecord(record: Partial<LinkRecord>): LinkRecord | null {
-  if (!record.code || !record.shortUrl || !record.destination || !record.createdAt) return null;
-  return {
-    code: record.code,
-    shortUrl: record.shortUrl,
-    destination: record.destination,
-    createdAt: record.createdAt,
-    expiresAt: typeof record.expiresAt === "string" ? record.expiresAt : null,
-    disabled: Boolean(record.disabled),
-    managementToken: record.managementToken
-  };
-}
-
 async function loadHistory(): Promise<LinkRecord[]> {
-  const result = await browser.storage.local.get("linkHistory");
+  const result = await browser.storage.local.get(["linkHistory", "serviceUrl"]);
   if (!Array.isArray(result.linkHistory)) return [];
-  return result.linkHistory.map(normalizeRecord).filter((record): record is LinkRecord => record !== null);
+  const fallbackServiceUrl = typeof result.serviceUrl === "string" ? result.serviceUrl : "";
+  return result.linkHistory
+    .map((record) => normalizeStoredRecord(record, fallbackServiceUrl))
+    .filter((record): record is LinkRecord => record !== null);
 }
 
 async function saveHistory(records: LinkRecord[]): Promise<void> {
@@ -61,12 +61,12 @@ function linkState(record: LinkRecord): "active" | "disabled" | "expired" {
   return "active";
 }
 
-function actionButton(label: string, action: string, code: string, danger = false): HTMLButtonElement {
+function actionButton(label: string, action: string, record: LinkRecord, danger = false): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
   button.textContent = label;
   button.dataset.action = action;
-  button.dataset.code = code;
+  button.dataset.recordKey = recordKey(record);
   if (danger) button.className = "danger";
   return button;
 }
@@ -105,10 +105,10 @@ function renderHistory(records: LinkRecord[]): void {
       : `Created ${new Date(record.createdAt).toLocaleString()}`;
     actions.className = "history-actions";
     actions.append(
-      actionButton("Copy", "copy", record.code),
-      actionButton("Edit", "edit", record.code),
-      actionButton(record.disabled ? "Enable" : "Disable", "toggle", record.code),
-      actionButton("Delete", "delete", record.code, true)
+      actionButton("Copy", "copy", record),
+      actionButton("Edit", "edit", record),
+      actionButton(record.disabled ? "Enable" : "Disable", "toggle", record),
+      actionButton("Delete", "delete", record, true)
     );
 
     top.append(link, badge);
@@ -200,7 +200,7 @@ form.addEventListener("submit", async (event) => {
     await navigator.clipboard.writeText(record.shortUrl);
 
     const history = await loadHistory();
-    await saveHistory([record, ...history.filter((item) => item.code !== record.code)]);
+    await saveHistory([record, ...history.filter((item) => recordKey(item) !== recordKey(record))]);
     customCodeInput.value = "";
     setStatus("Short link created and copied.", "success");
   } catch (error) {
@@ -213,10 +213,10 @@ form.addEventListener("submit", async (event) => {
 historyList.addEventListener("click", async (event) => {
   const target = event.target as Element | null;
   const button = target?.closest("button[data-action]") as HTMLButtonElement | null;
-  if (!button?.dataset.code || !button.dataset.action) return;
+  if (!button?.dataset.recordKey || !button.dataset.action) return;
 
   const history = await loadHistory();
-  const record = history.find((item) => item.code === button.dataset.code);
+  const record = history.find((item) => recordKey(item) === button.dataset.recordKey);
   if (!record) return;
 
   button.disabled = true;
@@ -237,20 +237,20 @@ historyList.addEventListener("click", async (event) => {
       if (entered === null) return;
       const cleaned = cleanUrl(entered.trim());
       const updated = await updateShortLink(settings, record, { destination: cleaned.url });
-      nextHistory = history.map((item) => item.code === record.code ? updated : item);
+      nextHistory = history.map((item) => recordKey(item) === recordKey(record) ? updated : item);
       setStatus("Destination updated.", "success");
     }
 
     if (button.dataset.action === "toggle") {
       const updated = await updateShortLink(settings, record, { disabled: !record.disabled });
-      nextHistory = history.map((item) => item.code === record.code ? updated : item);
+      nextHistory = history.map((item) => recordKey(item) === recordKey(record) ? updated : item);
       setStatus(updated.disabled ? "Link disabled." : "Link enabled.", "success");
     }
 
     if (button.dataset.action === "delete") {
       if (!window.confirm(`Permanently delete ${record.shortUrl}?`)) return;
       await deleteShortLink(settings, record);
-      nextHistory = history.filter((item) => item.code !== record.code);
+      nextHistory = history.filter((item) => recordKey(item) !== recordKey(record));
       setStatus("Link deleted.", "success");
     }
 
@@ -266,6 +266,48 @@ clearHistoryButton.addEventListener("click", async () => {
   await browser.storage.local.remove("linkHistory");
   renderHistory([]);
   setStatus("Local history cleared. Online links were not deleted.", "success");
+});
+
+exportBackupButton.addEventListener("click", async () => {
+  try {
+    const history = await loadHistory();
+    if (history.length === 0) throw new Error("There are no local links to export.");
+
+    const contents = JSON.stringify(createBackup(history), null, 2);
+    const objectUrl = URL.createObjectURL(new Blob([contents], { type: "application/json" }));
+    const download = document.createElement("a");
+    download.href = objectUrl;
+    download.download = `linkwisp-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    download.click();
+    URL.revokeObjectURL(objectUrl);
+    setStatus(`${history.length} link${history.length === 1 ? "" : "s"} exported.`, "success");
+  } catch (error) {
+    setStatus(error instanceof Error ? error.message : "The backup could not be exported.", "error");
+  }
+});
+
+importBackupButton.addEventListener("click", () => backupFileInput.click());
+
+backupFileInput.addEventListener("change", async () => {
+  const file = backupFileInput.files?.[0];
+  if (!file) return;
+
+  try {
+    if (file.size > 5_000_000) throw new Error("The selected backup is too large.");
+    const imported = parseBackup(await file.text());
+    if (!window.confirm(
+      `Import ${imported.length} link${imported.length === 1 ? "" : "s"}? Matching records will be updated.`
+    )) return;
+
+    const current = await loadHistory();
+    const result = mergeImportedRecords(current, imported);
+    await saveHistory(result.records);
+    setStatus(`Import complete: ${result.added} added, ${result.updated} updated.`, "success");
+  } catch (error) {
+    setStatus(error instanceof Error ? error.message : "The backup could not be imported.", "error");
+  } finally {
+    backupFileInput.value = "";
+  }
 });
 
 void initialize();

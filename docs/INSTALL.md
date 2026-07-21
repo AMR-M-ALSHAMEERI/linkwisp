@@ -28,6 +28,14 @@ GitHub-installed Chrome extensions do not update automatically.
 
 Browser-local storage normally survives a reload or code update. Export remains the safest backup.
 
+## Back up or move local history
+
+Open LinkWisp and use **Export** under **Local backup**. The browser downloads a dated `.json` file containing up to 200 local history records.
+
+To restore it, select **Import**, choose the backup, review the confirmation, and approve the import. New records are added and matching records are updated. LinkWisp validates the complete file before changing local storage.
+
+The backup does not contain the main service access code. It does contain private management keys needed to edit or delete individual links, so do not publish it, attach it to an issue, or commit it to GitHub.
+
 ## Removing
 
 Open `chrome://extensions`, find the extension, and select **Remove**. Removing the extension also removes its local browser storage. It does not automatically delete redirect mappings already created online.
@@ -37,3 +45,4 @@ Open `chrome://extensions`, find the extension, and select **Remove**. Removing 
 - **Chrome cannot find `manifest.json`:** You selected the outer download folder. Select the inner folder containing `manifest.json`.
 - **The extension disappears after moving files:** Restore the folder to its former location or load it again from its new location.
 - **Creating links fails:** Confirm the service address and access code in extension settings.
+- **A backup will not import:** Confirm that it is an unmodified LinkWisp JSON backup created by a supported version.
