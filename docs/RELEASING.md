@@ -20,7 +20,7 @@ The included `INSTALL.html`, extension assets, and `manifest.json` are all insid
 1. Decide the version number using semantic versioning: patch for compatible fixes, minor for compatible features, and major for breaking changes.
 2. Update the matching `version` value in the root, extension, and Worker `package.json` files.
 3. Update public documentation and review the privacy and installation statements.
-4. Choose and add a project license before the repository or release becomes public. No license is currently selected.
+4. Confirm the root `LICENSE` file and README still identify the MIT License and correct copyright holder.
 5. Run the local verification commands:
 
 ```bash

@@ -81,4 +81,4 @@ LinkWisp is developed by [AMR M. ALSHAMEERI](https://github.com/AMR-M-ALSHAMEERI
 
 ## License
 
-No license has been selected yet. Until one is added, normal copyright restrictions apply.
+LinkWisp is available under the [MIT License](LICENSE). Copyright (c) 2026 AMR M. ALSHAMEERI.
