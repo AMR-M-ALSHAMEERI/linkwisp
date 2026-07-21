@@ -29,6 +29,7 @@ const cleaningMessage = document.querySelector<HTMLElement>("#cleaning-message")
 const status = document.querySelector<HTMLElement>("#status")!;
 const historyList = document.querySelector<HTMLOListElement>("#history-list")!;
 const clearHistoryButton = document.querySelector<HTMLButtonElement>("#clear-history")!;
+const historySearchInput = document.querySelector<HTMLInputElement>("#history-search")!;
 const exportBackupButton = document.querySelector<HTMLButtonElement>("#export-backup")!;
 const importBackupButton = document.querySelector<HTMLButtonElement>("#import-backup")!;
 const backupFileInput = document.querySelector<HTMLInputElement>("#backup-file")!;
@@ -73,18 +74,26 @@ function actionButton(label: string, action: string, record: LinkRecord, danger 
 
 function renderHistory(records: LinkRecord[]): void {
   historyList.replaceChildren();
-  if (records.length === 0) {
+  const query = historySearchInput.value.trim().toLocaleLowerCase();
+  const visibleRecords = records
+    .filter((record) => !query || [record.code, record.shortUrl, record.destination]
+      .some((value) => value.toLocaleLowerCase().includes(query)))
+    .sort((left, right) => Number(right.favorite) - Number(left.favorite)
+      || Date.parse(right.createdAt) - Date.parse(left.createdAt));
+
+  if (visibleRecords.length === 0) {
     const empty = document.createElement("li");
     empty.className = "empty";
-    empty.textContent = "No links created yet.";
+    empty.textContent = records.length === 0 ? "No links created yet." : "No matching links.";
     historyList.append(empty);
     return;
   }
 
-  for (const record of records.slice(0, 8)) {
+  for (const record of visibleRecords.slice(0, query ? 20 : 8)) {
     const item = document.createElement("li");
     const top = document.createElement("div");
     const link = document.createElement("a");
+    const favorite = document.createElement("button");
     const badge = document.createElement("span");
     const destination = document.createElement("small");
     const metadata = document.createElement("div");
@@ -95,6 +104,14 @@ function renderHistory(records: LinkRecord[]): void {
     link.href = record.shortUrl;
     link.target = "_blank";
     link.textContent = record.shortUrl;
+    favorite.type = "button";
+    favorite.className = "favorite-button";
+    favorite.dataset.action = "favorite";
+    favorite.dataset.recordKey = recordKey(record);
+    favorite.dataset.favorite = String(record.favorite);
+    favorite.textContent = record.favorite ? "★" : "☆";
+    favorite.title = record.favorite ? "Remove from favorites" : "Add to favorites";
+    favorite.setAttribute("aria-label", favorite.title);
     badge.className = "link-state";
     badge.dataset.state = state;
     badge.textContent = state;
@@ -111,7 +128,7 @@ function renderHistory(records: LinkRecord[]): void {
       actionButton("Delete", "delete", record, true)
     );
 
-    top.append(link, badge);
+    top.append(favorite, link, badge);
     item.append(top, destination, metadata, actions);
     historyList.append(item);
   }
@@ -172,6 +189,8 @@ expirationSelect.addEventListener("change", () => {
   customExpirationField.classList.toggle("hidden", expirationSelect.value !== "custom");
 });
 
+historySearchInput.addEventListener("input", async () => renderHistory(await loadHistory()));
+
 saveSettingsButton.addEventListener("click", async () => {
   const serviceUrl = serviceUrlInput.value.trim().replace(/\/$/, "");
   const accessToken = accessTokenInput.value.trim();
@@ -226,6 +245,15 @@ historyList.addEventListener("click", async (event) => {
     if (button.dataset.action === "copy") {
       await navigator.clipboard.writeText(record.shortUrl);
       setStatus("Short link copied.", "success");
+      return;
+    }
+
+    if (button.dataset.action === "favorite") {
+      const nextHistory = history.map((item) => recordKey(item) === recordKey(record)
+        ? { ...item, favorite: !item.favorite }
+        : item);
+      await saveHistory(nextHistory);
+      setStatus(record.favorite ? "Removed from favorites." : "Added to favorites.", "success");
       return;
     }
 

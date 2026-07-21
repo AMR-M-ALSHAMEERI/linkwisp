@@ -69,6 +69,7 @@ export function normalizeStoredRecord(value: unknown, fallbackServiceUrl = ""): 
       : dateValue(record.expiresAt, "Expiration date");
 
     if (typeof record.disabled !== "boolean" && record.disabled !== undefined) return null;
+    if (typeof record.favorite !== "boolean" && record.favorite !== undefined) return null;
     if (record.managementToken !== undefined && (
       typeof record.managementToken !== "string"
       || record.managementToken.length < 16
@@ -82,6 +83,7 @@ export function normalizeStoredRecord(value: unknown, fallbackServiceUrl = ""): 
       createdAt,
       expiresAt,
       disabled: Boolean(record.disabled),
+      favorite: Boolean(record.favorite),
       managementToken: record.managementToken as string | undefined,
       serviceUrl
     };
@@ -140,6 +142,7 @@ export function mergeImportedRecords(current: LinkRecord[], imported: LinkRecord
       recordsByKey.set(key, {
         ...existing,
         ...incoming,
+        favorite: incoming.favorite || existing.favorite,
         managementToken: incoming.managementToken || existing.managementToken
       });
       updated += 1;

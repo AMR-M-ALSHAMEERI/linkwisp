@@ -53,6 +53,8 @@ The extension stores history, notes, favorites, and preferences in browser-local
 
 Link history can be exported as a versioned JSON backup and restored on another installation. The backup excludes the main service access code, but it contains private per-link management keys and must be stored securely.
 
+History search and favorites run entirely inside the extension. Search terms and favorite choices are not sent to the Worker; favorite state is included in local backups.
+
 ## License
 
 No license has been selected yet. Until one is added, normal copyright restrictions apply.

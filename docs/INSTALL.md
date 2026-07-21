@@ -36,6 +36,12 @@ To restore it, select **Import**, choose the backup, review the confirmation, an
 
 The backup does not contain the main service access code. It does contain private management keys needed to edit or delete individual links, so do not publish it, attach it to an issue, or commit it to GitHub.
 
+## Search and favorites
+
+Use **Search history** to find locally stored links by alias, short URL, or destination. Search happens only on the device and does not contact the LinkWisp service.
+
+Select the star beside a link to add or remove it from favorites. Favorite links appear above other recent links and favorite state is preserved in exported backups.
+
 ## Removing
 
 Open `chrome://extensions`, find the extension, and select **Remove**. Removing the extension also removes its local browser storage. It does not automatically delete redirect mappings already created online.

@@ -10,6 +10,7 @@ export interface LinkRecord {
   createdAt: string;
   expiresAt: string | null;
   disabled: boolean;
+  favorite: boolean;
   managementToken?: string;
   serviceUrl: string;
 }
@@ -66,7 +67,11 @@ export async function createShortLink(
     body: JSON.stringify({ destination, customCode: customCode || undefined, expiresAt })
   });
 
-  return { ...await apiResponse<Omit<LinkRecord, "serviceUrl">>(response), serviceUrl };
+  return {
+    ...await apiResponse<Omit<LinkRecord, "serviceUrl" | "favorite">>(response),
+    favorite: false,
+    serviceUrl
+  };
 }
 
 export async function updateShortLink(
@@ -84,7 +89,10 @@ export async function updateShortLink(
     body: JSON.stringify(update)
   });
 
-  return { ...record, ...await apiResponse<LinkRecord>(response) };
+  return {
+    ...record,
+    ...await apiResponse<Omit<LinkRecord, "favorite" | "serviceUrl" | "managementToken">>(response)
+  };
 }
 
 export async function deleteShortLink(settings: Settings, record: LinkRecord): Promise<void> {

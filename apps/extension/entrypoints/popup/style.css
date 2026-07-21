@@ -58,6 +58,8 @@ button:disabled { cursor: wait; opacity: 0.65; }
 .empty { color: #78817c; font-size: 12px; }
 .history-top { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
 .history-top a { flex: 1; min-width: 0; }
+.favorite-button { width: 24px; height: 24px; flex: 0 0 auto; margin: 0; border-radius: 999px; background: transparent; color: #718078; font-size: 17px; line-height: 1; padding: 0; }
+.favorite-button[data-favorite="true"] { background: #fff2c9; color: #916b00; }
 .link-state { border-radius: 999px; flex: 0 0 auto; font-size: 9px; font-weight: 800; padding: 3px 6px; text-transform: uppercase; }
 .link-state[data-state="active"] { background: #dff3e7; color: #24623f; }
 .link-state[data-state="disabled"] { background: #f5e6dc; color: #8a4d2b; }

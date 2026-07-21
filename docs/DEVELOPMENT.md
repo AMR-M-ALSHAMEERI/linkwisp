@@ -99,6 +99,17 @@ Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions
 
 Backup files are intentionally ignored nowhere by a universal filename rule because users may choose any download folder. Treat them as secrets and never place them in the repository.
 
+## Test search and favorites
+
+1. Create links with distinguishable aliases and destinations.
+2. Search for part of an alias, short URL, and destination; confirm each finds the expected record.
+3. Search for text that does not exist and confirm the empty result message appears.
+4. Clear the search, select an empty star, and confirm the filled star and link move to the favorites area at the top.
+5. Close and reopen the popup and confirm the favorite remains.
+6. Export a backup, remove the favorite, import the backup, and confirm the favorite is restored.
+
+Both features operate on `browser.storage.local`; they require no Worker or D1 changes.
+
 ## Cloudflare deployment
 
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.
