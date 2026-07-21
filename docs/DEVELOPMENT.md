@@ -163,6 +163,7 @@ The popup uses browser-native HTML and CSS. Visual changes must not hide focus i
 8. Confirm a selected tab changes smoothly and its panel fades upward without delaying interaction.
 9. Confirm toast messages animate in, replacement messages restart cleanly, and automatic/manual dismissal animates out.
 10. Enable the operating system or browser reduced-motion preference and confirm navigation and notifications update without noticeable movement.
+11. Open Settings, select **About LinkWisp**, and confirm the dialog shows the manifest version and developer/project links. Close it with the button, `Esc`, and a click outside the dialog.
 
 The Wisp Link overlay covers only a small central area, keeps the quiet margin untouched, and uses QR error-correction level H. Scanning remains the acceptance criterion; a visually attractive QR that scans unreliably must not be released.
 
@@ -173,6 +174,8 @@ Motion is intentionally limited to 140–180 ms and never controls application l
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.
 
 ## GitHub workflow
+
+GitHub Actions automatically checks and builds pushes and pull requests to `main`. A pushed `v*` tag can publish a versioned extension ZIP and SHA-256 checksum. See [RELEASING.md](RELEASING.md) before creating a tag; pushing a release tag is a publishing action.
 
 1. Create an empty GitHub repository without generated files.
 2. Initialize this project as a Git repository if necessary.

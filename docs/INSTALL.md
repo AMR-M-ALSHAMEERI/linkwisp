@@ -2,7 +2,9 @@
 
 This guide is for users who do not need to read or build the source code.
 
-> The first release ZIP has not been published yet. These are the installation steps the release will use.
+> The first release ZIP has not been published yet. Release packaging is ready, and these are the installation steps it will use.
+
+After extracting the release, double-click the included `INSTALL.html` for an offline copy of the essential setup, update, and troubleshooting instructions.
 
 ## Chrome and Chromium browsers
 
@@ -32,7 +34,7 @@ You can reopen the guide later through **Connection settings → Run setup guide
 
 - **Create** contains the destination, alias, expiration, and Create and copy action.
 - **Links** contains search, favorites, link management, QR actions, and Show more/less for longer history.
-- **Settings** contains connection verification, the setup guide, and local backup tools.
+- **Settings** contains connection verification, the setup guide, local backup tools, and an **About LinkWisp** row. Select that row to see the installed version, developer links, project links, and privacy summary in a dialog.
 
 LinkWisp remembers the selected view during the browser session. Success and error notifications float at the top of the visible popup, so you do not need to scroll to find the result of an action.
 

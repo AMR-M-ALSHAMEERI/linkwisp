@@ -8,6 +8,7 @@
     "dev:worker": "pnpm --filter @linkwisp/worker dev",
     "build": "pnpm -r build",
     "check": "pnpm -r check",
-    "zip": "pnpm --filter @linkwisp/extension zip"
+    "zip": "pnpm --filter @linkwisp/extension zip",
+    "release": "pnpm --filter @linkwisp/extension release"
   }
 }

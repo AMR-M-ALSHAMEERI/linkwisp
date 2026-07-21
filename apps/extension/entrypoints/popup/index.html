@@ -86,6 +86,16 @@
         </div>
         <input id="backup-file" class="hidden" type="file" accept="application/json,.json" />
       </section>
+
+      <section class="about-entry view-panel hidden" data-view-panel="settings" aria-label="About LinkWisp">
+        <button id="open-about" class="about-trigger" type="button">
+          <span>
+            <strong>About LinkWisp</strong>
+            <small>Version <span data-about-version>0.1.0</span></small>
+          </span>
+          <span class="about-arrow" aria-hidden="true">&rsaquo;</span>
+        </button>
+      </section>
     </main>
 
     <div id="toast" class="toast" role="status" aria-live="polite" hidden>
@@ -113,6 +123,25 @@
           <button id="dismiss-onboarding" class="secondary" type="button">Not now</button>
         </div>
       </form>
+    </dialog>
+
+    <dialog id="about-dialog" class="about-dialog" aria-labelledby="about-heading">
+      <div class="about-identity">
+        <img src="/brand/wisp-link.svg" alt="" />
+        <div>
+          <p class="eyebrow">ABOUT THE EXTENSION</p>
+          <h2 id="about-heading">LinkWisp</h2>
+          <p>Version <span data-about-version>0.1.0</span></p>
+        </div>
+      </div>
+      <p class="about-copy">A local-first tool for creating clean, shareable short links through a service you control.</p>
+      <p class="about-developer">Developed by <a href="https://github.com/AMR-M-ALSHAMEERI" target="_blank" rel="noreferrer">AMR M. ALSHAMEERI</a></p>
+      <div class="about-links">
+        <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp" target="_blank" rel="noreferrer">View project</a>
+        <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/blob/main/docs/INSTALL.md" target="_blank" rel="noreferrer">Installation guide</a>
+      </div>
+      <p class="about-privacy">History and QR generation stay on this device. LinkWisp collects no click analytics.</p>
+      <button id="close-about" class="secondary" type="button">Close</button>
     </dialog>
 
     <dialog id="qr-dialog" aria-labelledby="qr-heading">

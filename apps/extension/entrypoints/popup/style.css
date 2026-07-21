@@ -85,6 +85,7 @@ h2 { margin: 0; color: #1d432e; font-size: 15px; letter-spacing: -0.01em; }
 .create-card,
 .history-section,
 .backup-section,
+.about-entry,
 .settings {
   margin: 0 0 12px;
   border: 1px solid #dbe7df;
@@ -210,6 +211,41 @@ button:disabled { cursor: wait; opacity: 0.6; }
 .backup-warning { margin: 6px 0 0; color: #746e55; font-size: 9px; line-height: 1.45; }
 .backup-actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
 .backup-actions button { margin-top: 9px; }
+
+.about-entry { overflow: hidden; }
+.about-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  border-radius: 17px;
+  background: transparent;
+  color: #31523f;
+  padding: 13px 15px;
+  text-align: left;
+}
+.about-trigger:hover { background: #f7faf7; box-shadow: none; }
+.about-trigger strong,
+.about-trigger small { display: block; }
+.about-trigger strong { font-size: 11px; }
+.about-trigger small { margin-top: 3px; color: #78867e; font-size: 9px; font-weight: 550; }
+.about-arrow { color: #668071; font-size: 23px; font-weight: 400; line-height: 1; transition: transform 120ms ease; }
+.about-trigger:hover .about-arrow { transform: translateX(2px); }
+
+.about-dialog { width: min(326px, calc(100% - 28px)); }
+.about-identity { display: flex; align-items: center; gap: 12px; }
+.about-identity img { width: 54px; height: 54px; border-radius: 14px; }
+.about-identity p:last-child { margin: 4px 0 0; color: #718078; font-size: 9px; }
+.about-copy,
+.about-developer,
+.about-privacy { color: #58685f; font-size: 10px; line-height: 1.5; }
+.about-copy { margin: 10px 0 0; }
+.about-developer { margin: 7px 0 0; }
+.about-developer a,
+.about-links a { color: var(--green); font-weight: 750; }
+.about-links { display: flex; gap: 13px; margin-top: 9px; font-size: 10px; }
+.about-privacy { margin: 10px 0 0; border-top: 1px solid #e1ebe4; padding-top: 9px; }
+.about-dialog > button { margin-top: 13px; }
 
 dialog {
   width: min(326px, calc(100% - 28px));

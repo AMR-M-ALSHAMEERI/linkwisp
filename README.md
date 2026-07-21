@@ -37,11 +37,13 @@ The Cloudflare service is our own code and is not Bitly, TinyURL, or another sho
 
 ## Install the GitHub release
 
-The first packaged release is not available yet. When it is published, nontechnical installation instructions will be available in [docs/INSTALL.md](docs/INSTALL.md).
+Release automation and a beginner-friendly offline installer are ready; the first public archive has not been published yet. Each release ZIP includes `INSTALL.html`, which can be opened by double-clicking after extraction. See [docs/INSTALL.md](docs/INSTALL.md) for the same instructions online.
 
 ## Development setup
 
 See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+Maintainers can build checksummed release artifacts and publish them through a version tag by following [docs/RELEASING.md](docs/RELEASING.md).
 
 ## Repository layout
 
@@ -70,6 +72,12 @@ QR codes are generated locally from completed short URLs. LinkWisp does not send
 First-run onboarding explains the two connection values and verifies the Worker address plus access code without creating a link. Connection settings can run the same test again whenever configuration changes.
 
 The popup is organized into Create, Links, and Settings views. Global actions report through an accessible floating notification, while contextual onboarding and QR state messages remain beside the content they explain.
+
+The Settings view includes a compact **About LinkWisp** row. It opens a focused dialog containing the installed version, developer identity, project link, installation guide, and privacy summary. Its version is read from the installed extension manifest so it cannot drift from the packaged release.
+
+## About
+
+LinkWisp is developed by [AMR M. ALSHAMEERI](https://github.com/AMR-M-ALSHAMEERI). The source project is [AMR-M-ALSHAMEERI/linkwisp](https://github.com/AMR-M-ALSHAMEERI/linkwisp).
 
 ## License
 

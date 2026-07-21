@@ -1,0 +1,34 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run type checks
+        run: pnpm check
+      - name: Confirm tag matches extension version
+        run: pnpm --filter @linkwisp/extension verify:release-version "$GITHUB_REF_NAME"
+      - name: Build release archive and checksum
+        run: pnpm release
+      - name: Publish GitHub Release
+        run: gh release create "$GITHUB_REF_NAME" apps/extension/.output/*.zip apps/extension/.output/*.sha256 --verify-tag --generate-notes --title "LinkWisp $GITHUB_REF_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}

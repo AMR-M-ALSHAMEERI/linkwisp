@@ -55,6 +55,10 @@ const onboardingStatus = document.querySelector<HTMLElement>("#onboarding-status
 const finishOnboardingButton = document.querySelector<HTMLButtonElement>("#finish-onboarding")!;
 const dismissOnboardingButton = document.querySelector<HTMLButtonElement>("#dismiss-onboarding")!;
 const openOnboardingButton = document.querySelector<HTMLButtonElement>("#open-onboarding")!;
+const aboutDialog = document.querySelector<HTMLDialogElement>("#about-dialog")!;
+const openAboutButton = document.querySelector<HTMLButtonElement>("#open-about")!;
+const closeAboutButton = document.querySelector<HTMLButtonElement>("#close-about")!;
+const aboutVersions = [...document.querySelectorAll<HTMLElement>("[data-about-version]")];
 
 let currentQrDataUrl = "";
 let currentQrCode = "";
@@ -316,6 +320,7 @@ function selectedExpiration(): string | null {
 }
 
 async function initialize(): Promise<void> {
+  for (const version of aboutVersions) version.textContent = browser.runtime.getManifest().version;
   const [settings, history, tabs, session, onboarding] = await Promise.all([
     loadSettings(),
     loadHistory(),
@@ -359,6 +364,18 @@ for (const button of navButtons) {
 }
 
 toastCloseButton.addEventListener("click", () => setStatus(""));
+
+openAboutButton.addEventListener("click", () => aboutDialog.showModal());
+closeAboutButton.addEventListener("click", () => aboutDialog.close());
+aboutDialog.addEventListener("click", (event) => {
+  if (event.target !== aboutDialog) return;
+  const bounds = aboutDialog.getBoundingClientRect();
+  const outside = event.clientX < bounds.left
+    || event.clientX > bounds.right
+    || event.clientY < bounds.top
+    || event.clientY > bounds.bottom;
+  if (outside) aboutDialog.close();
+});
 
 showMoreLinksButton.addEventListener("click", async () => {
   historyExpanded = !historyExpanded;

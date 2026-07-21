@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Install LinkWisp</title>
+    <style>
+      :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #203c2b; background: #f4f7f2; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 32px 18px 60px; }
+      main { width: min(760px, 100%); margin: auto; }
+      header, section { border: 1px solid #d9e6dd; border-radius: 20px; background: white; box-shadow: 0 12px 34px #173b2810; }
+      header { display: flex; align-items: center; gap: 18px; padding: 24px; }
+      header img { width: 76px; height: 76px; }
+      h1 { margin: 0; font-size: 32px; letter-spacing: -0.04em; }
+      header p { margin: 5px 0 0; color: #627168; }
+      section { margin-top: 16px; padding: 22px 24px; }
+      h2 { margin: 0 0 12px; font-size: 19px; }
+      p, li { color: #53645a; line-height: 1.6; }
+      ol, ul { padding-left: 23px; }
+      li + li { margin-top: 7px; }
+      code { border-radius: 6px; background: #e8f1eb; color: #215f42; padding: 2px 6px; }
+      .note { border-left: 4px solid #8de0b2; border-radius: 8px; background: #eff9f2; padding: 10px 13px; }
+      .warning { border-left-color: #d49a44; background: #fff8e9; }
+      a { color: #215f42; font-weight: 700; }
+      footer { color: #78867e; font-size: 13px; padding: 20px 4px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="brand/wisp-link.svg" alt="LinkWisp logo" />
+        <div><h1>Install LinkWisp</h1><p>A friendly offline guide for Chrome and Chromium browsers.</p></div>
+      </header>
+
+      <section>
+        <h2>Before you start</h2>
+        <p class="note">Keep the extracted LinkWisp folder in a permanent place. Chrome loads the extension from that folder, so moving or deleting it will disconnect the installation.</p>
+      </section>
+
+      <section>
+        <h2>Install in Chrome</h2>
+        <ol>
+          <li>Extract the downloaded LinkWisp ZIP into a permanent folder, such as <code>Documents/Browser Extensions/LinkWisp</code>.</li>
+          <li>Open Chrome and enter <code>chrome://extensions</code> in the address bar.</li>
+          <li>Turn on <strong>Developer mode</strong> in the upper-right corner.</li>
+          <li>Select <strong>Load unpacked</strong>.</li>
+          <li>Select the extracted folder that contains <code>manifest.json</code>, then choose <strong>Select Folder</strong>.</li>
+          <li>Open Chrome's Extensions menu and pin LinkWisp for quick access.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Connect your service</h2>
+        <p>Open LinkWisp. Its setup guide asks for two values supplied by the LinkWisp service owner:</p>
+        <ul>
+          <li><strong>Worker address:</strong> the web address that creates and redirects short links.</li>
+          <li><strong>Access code:</strong> the private code allowed to create links.</li>
+        </ul>
+        <p>Select <strong>Test and finish setup</strong>. The values are verified without creating a link and are stored only in this Chrome profile.</p>
+      </section>
+
+      <section>
+        <h2>Update safely</h2>
+        <ol>
+          <li>Use <strong>Settings &rarr; Local backup &rarr; Export</strong> as a precaution.</li>
+          <li>Extract the newer release over the existing permanent LinkWisp folder.</li>
+          <li>Return to <code>chrome://extensions</code> and select <strong>Reload</strong> on LinkWisp.</li>
+        </ol>
+        <p class="note warning">GitHub-installed extensions do not update automatically. Download updates only from the official LinkWisp repository.</p>
+      </section>
+
+      <section>
+        <h2>Troubleshooting</h2>
+        <ul>
+          <li><strong>Chrome cannot find manifest.json:</strong> select the inner extracted folder containing that file.</li>
+          <li><strong>LinkWisp disappeared:</strong> restore its folder or load it again from its new permanent location.</li>
+          <li><strong>Connection failed:</strong> check the Worker address, access code, Internet connection, and whether the service is running.</li>
+          <li><strong>Need more help:</strong> visit <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp">the LinkWisp project</a>.</li>
+        </ul>
+      </section>
+
+      <footer>LinkWisp &mdash; developed by AMR M. ALSHAMEERI</footer>
+    </main>
+  </body>
+</html>
