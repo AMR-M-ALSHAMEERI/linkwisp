@@ -15,6 +15,17 @@ This guide is for users who do not need to read or build the source code.
 7. Pin the extension from Chrome's Extensions menu.
 8. Open the extension and enter the service address and access code provided by the service owner.
 
+## First setup
+
+LinkWisp opens a setup guide the first time this version runs. Enter:
+
+- **Worker address:** the local development address or public service address provided by the LinkWisp service owner.
+- **Access code:** the private creation code provided by the same owner.
+
+Select **Test and finish setup**. LinkWisp checks the address and access code without creating a short link. Successful values are stored only in that browser profile. Select **Not now** to postpone setup; the guide returns next time.
+
+You can reopen the guide later through **Connection settings → Run setup guide**. Use **Test and save** there to verify changed settings before replacing the saved values.
+
 Do not delete or move the extracted folder while the extension is installed.
 
 ## Updating
@@ -59,4 +70,6 @@ Open `chrome://extensions`, find the extension, and select **Remove**. Removing 
 - **Chrome cannot find `manifest.json`:** You selected the outer download folder. Select the inner folder containing `manifest.json`.
 - **The extension disappears after moving files:** Restore the folder to its former location or load it again from its new location.
 - **Creating links fails:** Confirm the service address and access code in extension settings.
+- **The Worker cannot be reached:** Confirm the address, Internet connection, and—during local development—that `pnpm dev:worker` is still running.
+- **Invalid access code:** Re-enter the code supplied by the service owner. LinkWisp does not recover or display that secret.
 - **A backup will not import:** Confirm that it is an unmodified LinkWisp JSON backup created by a supported version.

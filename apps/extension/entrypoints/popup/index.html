@@ -45,7 +45,10 @@
 
         <label for="access-token">Access code</label>
         <input id="access-token" type="password" autocomplete="off" />
-        <button id="save-settings" class="secondary" type="button">Save settings</button>
+        <div class="settings-actions">
+          <button id="save-settings" class="secondary" type="button">Test and save</button>
+          <button id="open-onboarding" class="text-button" type="button">Run setup guide</button>
+        </div>
       </details>
 
       <section class="history-section" aria-labelledby="history-heading">
@@ -68,6 +71,28 @@
         <input id="backup-file" class="hidden" type="file" accept="application/json,.json" />
       </section>
     </main>
+
+    <dialog id="onboarding-dialog" class="onboarding-dialog" aria-labelledby="onboarding-heading">
+      <p class="eyebrow">WELCOME TO LINKWISP</p>
+      <h2 id="onboarding-heading">Connect your link service</h2>
+      <p class="onboarding-copy">LinkWisp keeps history on this device. It needs your Worker only to create and resolve shareable short links.</p>
+      <ol class="onboarding-points">
+        <li>Enter the Worker address shown by local development or provided by the service owner.</li>
+        <li>Enter its private access code. The code stays in this browser profile.</li>
+        <li>LinkWisp will verify both without creating a link.</li>
+      </ol>
+      <form id="onboarding-form">
+        <label for="onboarding-service-url">Worker address</label>
+        <input id="onboarding-service-url" type="url" placeholder="http://127.0.0.1:8787" required />
+        <label for="onboarding-access-token">Access code</label>
+        <input id="onboarding-access-token" type="password" autocomplete="off" required />
+        <p id="onboarding-status" class="status" role="status"></p>
+        <div class="onboarding-actions">
+          <button id="finish-onboarding" type="submit">Test and finish setup</button>
+          <button id="dismiss-onboarding" class="secondary" type="button">Not now</button>
+        </div>
+      </form>
+    </dialog>
 
     <dialog id="qr-dialog" aria-labelledby="qr-heading">
       <h2 id="qr-heading">Short-link QR code</h2>

@@ -47,6 +47,8 @@ button:disabled { cursor: wait; opacity: 0.65; }
 
 .settings { margin-top: 18px; border-top: 1px solid #d9e0db; padding-top: 14px; }
 .settings summary { cursor: pointer; font-size: 12px; font-weight: 700; }
+.settings-actions { display: grid; gap: 8px; grid-template-columns: 1fr auto; align-items: center; }
+.settings-actions .text-button { padding: 8px 2px; }
 
 .history-section { margin-top: 22px; border-top: 1px solid #d9e0db; padding-top: 16px; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; }
@@ -84,4 +86,11 @@ dialog::backdrop { background: #102a1d80; }
 #qr-image { display: block; width: 100%; border: 1px solid #d9e0db; border-radius: 12px; background: #f4f7f2; image-rendering: pixelated; }
 .qr-actions { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
 .qr-actions button { margin-top: 12px; }
+
+.onboarding-dialog { width: min(340px, calc(100% - 24px)); }
+.onboarding-copy { margin: 8px 0 0; color: #526159; font-size: 12px; line-height: 1.5; }
+.onboarding-points { margin: 12px 0 4px; padding-left: 20px; color: #526159; font-size: 11px; line-height: 1.5; }
+.onboarding-points li + li { margin-top: 5px; }
+.onboarding-actions { display: grid; gap: 8px; grid-template-columns: 2fr 1fr; }
+.onboarding-actions button { margin-top: 10px; }
 

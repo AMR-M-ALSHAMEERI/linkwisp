@@ -122,6 +122,21 @@ Both features operate on `browser.storage.local`; they require no Worker or D1 c
 
 The extension uses the browser build of `qrcode`. Generation occurs locally; this feature adds no host permission, API route, D1 field, or external request.
 
+## Test first-run onboarding
+
+This milestone adds `GET /api/session`, so stop and restart the local Worker before testing. No database migration is required.
+
+1. Restart `pnpm dev:worker`, rebuild/reload the extension, and open LinkWisp.
+2. Confirm the setup guide appears with existing settings prefilled.
+3. Enter a wrong access code and confirm the guide reports **Invalid access code** without closing or replacing saved settings.
+4. Restore the correct code, select **Test and finish setup**, and confirm the dialog closes with a success message.
+5. Close and reopen the popup and confirm onboarding no longer opens automatically.
+6. Open **Connection settings**, select **Run setup guide**, and confirm it can be reopened manually.
+7. Change the Worker address to an unreachable address and select **Test and save**; confirm the existing saved connection continues to create links afterward.
+8. Restore the correct address and confirm **Test and save** succeeds.
+
+The authenticated check verifies the Worker and owner access code without inserting, updating, or reading a D1 link record.
+
 ## Cloudflare deployment
 
 Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.

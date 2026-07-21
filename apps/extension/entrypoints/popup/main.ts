@@ -4,6 +4,7 @@ import {
   cleanUrl,
   createShortLink,
   deleteShortLink,
+  testConnection,
   updateShortLink,
   type LinkRecord,
   type Settings
@@ -40,6 +41,14 @@ const qrState = document.querySelector<HTMLElement>("#qr-state")!;
 const qrImage = document.querySelector<HTMLImageElement>("#qr-image")!;
 const downloadQrButton = document.querySelector<HTMLButtonElement>("#download-qr")!;
 const closeQrButton = document.querySelector<HTMLButtonElement>("#close-qr")!;
+const onboardingDialog = document.querySelector<HTMLDialogElement>("#onboarding-dialog")!;
+const onboardingForm = document.querySelector<HTMLFormElement>("#onboarding-form")!;
+const onboardingServiceUrlInput = document.querySelector<HTMLInputElement>("#onboarding-service-url")!;
+const onboardingAccessTokenInput = document.querySelector<HTMLInputElement>("#onboarding-access-token")!;
+const onboardingStatus = document.querySelector<HTMLElement>("#onboarding-status")!;
+const finishOnboardingButton = document.querySelector<HTMLButtonElement>("#finish-onboarding")!;
+const dismissOnboardingButton = document.querySelector<HTMLButtonElement>("#dismiss-onboarding")!;
+const openOnboardingButton = document.querySelector<HTMLButtonElement>("#open-onboarding")!;
 
 let currentQrDataUrl = "";
 let currentQrCode = "";
@@ -150,6 +159,34 @@ function setStatus(message: string, kind?: "success" | "error"): void {
   status.dataset.kind = kind || "";
 }
 
+function candidateSettings(serviceUrl: string, accessToken: string): Settings {
+  return {
+    serviceUrl: serviceUrl.trim().replace(/\/$/, ""),
+    accessToken: accessToken.trim()
+  };
+}
+
+function showOnboarding(settings: Settings): void {
+  onboardingServiceUrlInput.value = settings.serviceUrl;
+  onboardingAccessTokenInput.value = settings.accessToken;
+  onboardingStatus.textContent = "";
+  onboardingStatus.dataset.kind = "";
+  if (!onboardingDialog.open) onboardingDialog.showModal();
+}
+
+async function verifyAndSave(settings: Settings): Promise<void> {
+  await testConnection(settings);
+  await browser.storage.local.set({
+    serviceUrl: settings.serviceUrl,
+    accessToken: settings.accessToken,
+    onboardingComplete: true
+  });
+  serviceUrlInput.value = settings.serviceUrl;
+  accessTokenInput.value = settings.accessToken;
+  onboardingServiceUrlInput.value = settings.serviceUrl;
+  onboardingAccessTokenInput.value = settings.accessToken;
+}
+
 function selectedExpiration(): string | null {
   const durations: Record<string, number> = {
     hour: 60 * 60 * 1000,
@@ -170,11 +207,12 @@ function selectedExpiration(): string | null {
 }
 
 async function initialize(): Promise<void> {
-  const [settings, history, tabs, session] = await Promise.all([
+  const [settings, history, tabs, session, onboarding] = await Promise.all([
     loadSettings(),
     loadHistory(),
     browser.tabs.query({ active: true, currentWindow: true }),
-    browser.storage.session.get("pendingDestination")
+    browser.storage.session.get("pendingDestination"),
+    browser.storage.local.get("onboardingComplete")
   ]);
 
   serviceUrlInput.value = settings.serviceUrl;
@@ -194,6 +232,7 @@ async function initialize(): Promise<void> {
 
   if (pendingDestination) await browser.storage.session.remove("pendingDestination");
   renderHistory(history);
+  if (onboarding.onboardingComplete !== true) showOnboarding(settings);
 }
 
 expirationSelect.addEventListener("change", () => {
@@ -203,10 +242,43 @@ expirationSelect.addEventListener("change", () => {
 historySearchInput.addEventListener("input", async () => renderHistory(await loadHistory()));
 
 saveSettingsButton.addEventListener("click", async () => {
-  const serviceUrl = serviceUrlInput.value.trim().replace(/\/$/, "");
-  const accessToken = accessTokenInput.value.trim();
-  await browser.storage.local.set({ serviceUrl, accessToken });
-  setStatus("Connection settings saved.", "success");
+  saveSettingsButton.disabled = true;
+  setStatus("");
+  try {
+    await verifyAndSave(candidateSettings(serviceUrlInput.value, accessTokenInput.value));
+    setStatus("Connection verified and saved.", "success");
+  } catch (error) {
+    setStatus(error instanceof Error ? error.message : "Connection verification failed.", "error");
+  } finally {
+    saveSettingsButton.disabled = false;
+  }
+});
+
+openOnboardingButton.addEventListener("click", async () => showOnboarding(await loadSettings()));
+
+dismissOnboardingButton.addEventListener("click", () => onboardingDialog.close());
+
+onboardingForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  finishOnboardingButton.disabled = true;
+  onboardingStatus.textContent = "Testing connection...";
+  onboardingStatus.dataset.kind = "";
+
+  try {
+    await verifyAndSave(candidateSettings(
+      onboardingServiceUrlInput.value,
+      onboardingAccessTokenInput.value
+    ));
+    onboardingStatus.textContent = "Connection verified. Setup is complete.";
+    onboardingStatus.dataset.kind = "success";
+    setStatus("Connection verified and saved.", "success");
+    onboardingDialog.close();
+  } catch (error) {
+    onboardingStatus.textContent = error instanceof Error ? error.message : "Connection verification failed.";
+    onboardingStatus.dataset.kind = "error";
+  } finally {
+    finishOnboardingButton.disabled = false;
+  }
 });
 
 form.addEventListener("submit", async (event) => {

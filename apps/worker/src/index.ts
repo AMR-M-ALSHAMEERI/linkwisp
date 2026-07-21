@@ -28,7 +28,7 @@ const CODE_PATTERN = /^[A-Za-z0-9_-]{3,32}$/;
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
-  "Access-Control-Allow-Methods": "POST, PATCH, DELETE, OPTIONS"
+  "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS"
 };
 
 function json(data: unknown, status = 200): Response {
@@ -227,6 +227,11 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
+    if (request.method === "GET" && url.pathname === "/api/session") {
+      return isCreatorAuthorized(request, env)
+        ? json({ status: "ok" })
+        : json({ error: "Invalid access code." }, 401);
+    }
     if (request.method === "POST" && url.pathname === "/api/links") return createLink(request, env);
     if (request.method === "GET" && url.pathname === "/health") return json({ status: "ok" });
 

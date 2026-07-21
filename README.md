@@ -57,6 +57,8 @@ History search and favorites run entirely inside the extension. Search terms and
 
 QR codes are generated locally from completed short URLs. LinkWisp does not send QR contents to an external QR service or store a second QR copy in D1.
 
+First-run onboarding explains the two connection values and verifies the Worker address plus access code without creating a link. Connection settings can run the same test again whenever configuration changes.
+
 ## License
 
 No license has been selected yet. Until one is added, normal copyright restrictions apply.

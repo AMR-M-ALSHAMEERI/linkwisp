@@ -46,9 +46,39 @@ export function cleanUrl(value: string): { url: string; removed: number } {
 
 async function apiResponse<T>(response: Response): Promise<T> {
   if (response.status === 204) return undefined as T;
-  const body = await response.json() as T & { error?: string };
-  if (!response.ok) throw new Error(body.error || "The link service request failed.");
+  let body: (T & { error?: string }) | null = null;
+  try {
+    body = await response.json() as T & { error?: string };
+  } catch {
+    // A wrong service address may return HTML or plain text instead of LinkWisp JSON.
+  }
+  if (!response.ok) throw new Error(body?.error || `The link service returned HTTP ${response.status}.`);
+  if (!body) throw new Error("The service did not return a valid LinkWisp response.");
   return body;
+}
+
+export async function testConnection(settings: Settings): Promise<void> {
+  let serviceUrl: string;
+  try {
+    const url = new URL(settings.serviceUrl);
+    if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error();
+    serviceUrl = url.toString().replace(/\/$/, "");
+  } catch {
+    throw new Error("Enter a valid HTTP or HTTPS Worker address.");
+  }
+
+  if (!settings.accessToken) throw new Error("Enter the access code.");
+
+  let response: Response;
+  try {
+    response = await fetch(`${serviceUrl}/api/session`, {
+      headers: { "Authorization": `Bearer ${settings.accessToken}` }
+    });
+  } catch {
+    throw new Error("Could not reach the Worker. Check its address and confirm it is running.");
+  }
+
+  await apiResponse<{ status: "ok" }>(response);
 }
 
 export async function createShortLink(
