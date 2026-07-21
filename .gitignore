@@ -1,0 +1,15 @@
+node_modules/
+.pnpm-store/
+.wxt/
+.output/
+dist/
+.wrangler/
+.dev.vars
+*.log
+.DS_Store
+Thumbs.db
+work/
+outputs/
+
+# Private working documentation. Keep this local and out of GitHub.
+project-notes/

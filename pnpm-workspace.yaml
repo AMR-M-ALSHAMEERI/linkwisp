@@ -1,0 +1,13 @@
+packages:
+  - "apps/*"
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+  - spawn-sync
+  - workerd
+allowBuilds:
+  esbuild: true
+  sharp: true
+  spawn-sync: true
+  workerd: true

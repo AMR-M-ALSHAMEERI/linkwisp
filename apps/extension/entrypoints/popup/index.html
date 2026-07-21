@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkWisp</title>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <p class="eyebrow">LOCAL-FIRST</p>
+        <h1>Shorten this page</h1>
+      </header>
+
+      <form id="shorten-form">
+        <label for="destination">Destination</label>
+        <textarea id="destination" name="destination" rows="3" required></textarea>
+        <p id="cleaning-message" class="hint"></p>
+
+        <label for="custom-code">Custom alias <span>(optional)</span></label>
+        <input id="custom-code" name="customCode" maxlength="32" placeholder="project-notes" />
+
+        <button id="create-button" type="submit">Create and copy</button>
+        <p id="status" class="status" role="status"></p>
+      </form>
+
+      <details class="settings">
+        <summary>Connection settings</summary>
+        <label for="service-url">Worker address</label>
+        <input id="service-url" type="url" placeholder="https://example.workers.dev" />
+
+        <label for="access-token">Access code</label>
+        <input id="access-token" type="password" autocomplete="off" />
+        <button id="save-settings" class="secondary" type="button">Save settings</button>
+      </details>
+
+      <section class="history-section" aria-labelledby="history-heading">
+        <div class="section-heading">
+          <h2 id="history-heading">Recent links</h2>
+          <button id="clear-history" class="text-button" type="button">Clear</button>
+        </div>
+        <ol id="history-list" class="history-list"></ol>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
