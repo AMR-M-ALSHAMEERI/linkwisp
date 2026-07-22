@@ -65,7 +65,7 @@ Worker address: http://127.0.0.1:8787
 Access code: the ACCESS_TOKEN value from apps/worker/.dev.vars
 ```
 
-The local Worker must remain running while testing creation and redirects. Local short links work only on the development computer; production deployment later provides a public `workers.dev` address.
+The local Worker must remain running while testing creation and redirects. Local short links work only on the development computer. A deployed Worker provides a public `workers.dev` address, while the extension and its history remain local.
 
 ## Test link lifecycle controls
 
@@ -171,7 +171,9 @@ Motion is intentionally limited to 140–180 ms and never controls application l
 
 ## Cloudflare deployment
 
-Authentication and production deployment will be documented once the local MVP is verified. Never commit Cloudflare API tokens or the link-creation access token.
+The local MVP has been verified against a production Worker and D1 database. Follow [DEPLOYMENT.md](DEPLOYMENT.md) to create an independent deployment, apply the migrations, store `ACCESS_TOKEN` as an encrypted Worker secret, and connect the extension.
+
+Never commit Cloudflare login credentials, Wrangler OAuth credentials, recovery codes, `.dev.vars`, database exports, or the link-creation access token. The D1 database ID in `wrangler.jsonc` identifies a binding but does not authorize Cloudflare account access.
 
 ## GitHub workflow
 

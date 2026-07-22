@@ -12,9 +12,9 @@ A local-first browser extension for creating clean, shareable short links throug
 
 ## Current status
 
-This repository is in active MVP development. The initial release targets Chrome and Chromium browsers through a GitHub Release ZIP.
+LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. The packaged GitHub Release has been tested against both a local Worker and a personal Cloudflare Worker + D1 production deployment.
 
-## Planned MVP
+## Implemented MVP
 
 - Shorten the current tab without copying and pasting
 - Remove common tracking parameters before shortening
@@ -37,7 +37,13 @@ Local history                 Store only required mappings
 QR generation
 ```
 
-The Cloudflare service is our own code and is not Bitly, TinyURL, or another shortening provider. Cloudflare only supplies the internet-accessible runtime and database.
+The Cloudflare service is LinkWisp's own Worker code and is not Bitly, TinyURL, or another shortening provider. Cloudflare supplies the internet-accessible runtime and D1 database.
+
+## Public code, privately controlled service
+
+LinkWisp is designed to be reviewable as an open-source portfolio project while each hosted deployment remains controlled by its owner. A public Worker address lets anyone follow an enabled short link, but creating or managing links requires private credentials that are never included in source code or release archives.
+
+The maintainer's personal production deployment is available at [`linkwisp.amr-m-dev.workers.dev`](https://linkwisp.amr-m-dev.workers.dev/health). Its health endpoint is public; its creation access code and D1 data are private. Developers who want a working instance should deploy the Worker and D1 database to their own Cloudflare account by following [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Install the GitHub release
 
@@ -46,6 +52,8 @@ The Cloudflare service is our own code and is not Bitly, TinyURL, or another sho
 ## Development setup
 
 See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+To operate an independent internet-accessible instance, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). A custom domain is optional; a free `workers.dev` address is sufficient for personal and portfolio use.
 
 Maintainers can build checksummed release artifacts and publish them through a version tag by following [docs/RELEASING.md](docs/RELEASING.md).
 

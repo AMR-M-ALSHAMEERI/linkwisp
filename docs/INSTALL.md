@@ -42,6 +42,8 @@ Select **Test and finish setup**. LinkWisp checks the address and access code wi
 
 You can reopen the guide later through **Connection settings → Run setup guide**. Use **Test and save** there to verify changed settings before replacing the saved values.
 
+Downloading LinkWisp does not grant access to the maintainer's Cloudflare account or personal shortening service. A user needs connection values supplied by a service owner or can deploy an independent Worker and D1 database by following [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Navigate the popup
 
 - **Create** contains the destination, alias, expiration, and Create and copy action.
