@@ -85,9 +85,13 @@ Select the star beside a link to add or remove it from favorites. Favorite links
 
 Select **QR** on any recent link to display a scannable code for its short URL. The center Wisp Link mark is added locally with high QR error correction. Select **Download PNG** to save it as `linkwisp-ALIAS-qr.png`, or **Close** to return to history.
 
-The QR dialog reports the link's current local state. Active links are ready to scan, disabled links will redirect again after being enabled, and expired links currently open an expired-link response. Viewing or downloading the QR remains available in every state because the encoded short URL itself does not change.
+The QR dialog reports the link's current local state. Active links are ready to scan, while disabled and expired links open a branded explanation page until the owner changes their state. Viewing or downloading the QR remains available in every state because the encoded short URL itself does not change.
 
 QR generation happens inside the extension. No link is sent to a QR website or additional online service.
+
+## Unavailable links
+
+LinkWisp explains why a short link cannot redirect without revealing its private destination. A temporarily disabled link offers **Try again**, an expired link asks the visitor to request a fresh link, and an unknown or deleted alias asks them to check the address. These pages come from the Worker, so visitors do not need the extension installed.
 
 ## Removing
 

@@ -173,8 +173,24 @@ button:disabled { cursor: wait; opacity: 0.6; }
 .settings { padding: 13px 15px; }
 .settings summary { cursor: pointer; color: #31523f; font-size: 11px; font-weight: 780; }
 .settings[open] summary { margin-bottom: 2px; }
-.settings-actions { display: grid; gap: 8px; grid-template-columns: 1fr auto; align-items: center; }
-.settings-actions .text-button { padding: 8px 2px; }
+.settings-actions { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
+.settings-actions button { min-height: 38px; margin: 12px 0 0; }
+
+.setup-guide-button {
+  border: 1px solid #b9cfbf;
+  background: #fbfdfb;
+  color: #315d43;
+  box-shadow: 0 2px 8px #173b280a;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 100ms ease;
+}
+.setup-guide-button:hover {
+  border-color: #79ad8c;
+  background: #edf7f0;
+  color: var(--green-dark);
+  box-shadow: 0 6px 14px #215f4217;
+  transform: translateY(-1px);
+}
+.setup-guide-button:active { transform: translateY(1px); }
 
 .text-button {
   width: auto;

@@ -83,8 +83,10 @@ Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions
 1. Create a link with **Never** selected and confirm that it redirects.
 2. Create a link with an expiration and confirm the expiry appears in Recent links.
 3. Select **Edit**, enter another HTTP or HTTPS destination, and confirm the same short URL opens the new destination.
-4. Select **Disable** and confirm the short URL returns `404`; select **Enable** and confirm it redirects again.
-5. Select **Delete**, confirm the warning, and confirm the short URL then returns `404`.
+4. Select **Disable** and confirm the short URL returns the branded **Link paused** page with HTTP `404`; select **Enable** and confirm it redirects again.
+5. Select **Delete**, confirm the warning, and confirm the short URL returns the branded **Link not found** page with HTTP `404`.
+6. Let a temporary test link expire and confirm it returns the branded **Link expired** page with HTTP `410`.
+7. Check the status pages on a narrow mobile viewport, in dark mode, and with reduced motion enabled. Confirm they reveal no destination URL and make no external asset requests.
 
 **Clear local history** only removes records from this Chrome profile. It does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
 
@@ -182,6 +184,8 @@ pnpm run types
 ```
 
 The Worker check runs Wrangler's `--check` mode before TypeScript so CI fails when the generated binding contract is stale.
+
+The repository's `.gitattributes` keeps text files on LF line endings so generated metadata is consistent on Windows and Linux. Wrangler must also be able to resolve `apps/worker/src/index.ts` while generating types. If a restricted development sandbox blocks that entrypoint, the output can omit `Cloudflare.GlobalProps` and later fail on GitHub Actions. Run `pnpm run types` from an ordinary terminal with normal access, then confirm the generated file contains `mainModule: typeof import("./src/index")` before committing it.
 
 ## GitHub workflow
 

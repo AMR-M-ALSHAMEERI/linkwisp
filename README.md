@@ -22,6 +22,7 @@ LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. T
 - Copy the result automatically
 - Keep searchable history locally in the extension
 - Expire, disable, or delete links
+- Show branded, privacy-safe pages when a link is disabled, expired, or missing
 - Generate QR codes locally
 - Offer a right-click action and keyboard shortcut
 - Export and import local history
@@ -80,6 +81,8 @@ Link history can be exported as a versioned JSON backup and restored on another 
 History search and favorites run entirely inside the extension. Search terms and favorite choices are not sent to the Worker; favorite state is included in local backups.
 
 QR codes are generated locally from completed short URLs. LinkWisp does not send QR contents to an external QR service or store a second QR copy in D1.
+
+When a public short link cannot redirect, the Worker returns a small branded status page instead of plain text. These pages do not reveal the destination, load external assets, run JavaScript, collect analytics, or permit search indexing.
 
 First-run onboarding explains the two connection values and verifies the Worker address plus access code without creating a link. Connection settings can run the same test again whenever configuration changes.
 
