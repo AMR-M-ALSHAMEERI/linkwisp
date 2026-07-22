@@ -74,7 +74,7 @@ The core palette is deep green `#215F42`, mint `#8DE0B2`, and soft cream `#F4F7F
 
 ## Privacy model
 
-The extension stores history, notes, favorites, and preferences in browser-local storage. Creating a shareable short link necessarily sends its destination and selected alias to the configured Worker. No click analytics are collected in the MVP.
+The extension stores history, favorites, and preferences in browser-local storage. Creating a shareable short link necessarily sends its destination and selected alias to the configured Worker. No click analytics are collected in the MVP.
 
 Link history can be exported as a versioned JSON backup and restored on another installation. The backup excludes the main service access code, but it contains private per-link management keys and must be stored securely.
 

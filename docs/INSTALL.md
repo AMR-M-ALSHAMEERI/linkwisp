@@ -8,7 +8,7 @@ After extracting the release, double-click the included `INSTALL.html` for an of
 
 ## Chrome and Chromium browsers
 
-1. Download `linkwisp-chrome-vX.Y.Z.zip` from the repository's **Releases** page.
+1. Download `linkwisp-X.Y.Z-chrome.zip` from the repository's **Releases** page.
 2. Extract the ZIP into a permanent folder such as `Documents/Browser Extensions/LinkWisp`.
 3. Open Chrome and enter `chrome://extensions` in the address bar.
 4. Enable **Developer mode** in the upper-right corner.
