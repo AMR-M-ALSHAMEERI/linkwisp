@@ -3,6 +3,9 @@
   "name": "linkwisp",
   "main": "src/index.ts",
   "compatibility_date": "2026-07-21",
+  "secrets": {
+    "required": ["ACCESS_TOKEN"]
+  },
   "d1_databases": [
     {
       "binding": "DB",

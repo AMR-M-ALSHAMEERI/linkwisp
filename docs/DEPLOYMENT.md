@@ -96,27 +96,29 @@ Generate a unique random value of at least 32 characters and save it in a passwo
 
 Do not reuse a Cloudflare, GitHub, email, or computer password. Never put the value in `wrangler.jsonc`, source code, documentation, screenshots, issues, or release files.
 
-## 6. Deploy and attach the secret
+## 6. Attach the secret and deploy
 
-Deploy the Worker:
-
-```bash
-pnpm exec wrangler deploy
-```
-
-On the first deployment, approve creation of an account-level `workers.dev` subdomain. Wrangler prints the final origin, such as:
-
-```text
-https://linkwisp.YOUR_SUBDOMAIN.workers.dev
-```
-
-Before `ACCESS_TOKEN` exists, LinkWisp rejects authenticated creation requests. Attach the saved value immediately through Wrangler's interactive prompt:
+`wrangler.jsonc` declares `ACCESS_TOKEN` as required, so an ordinary deployment is rejected until Cloudflare has that secret. Upload the saved value through Wrangler's interactive prompt:
 
 ```bash
 pnpm exec wrangler secret put ACCESS_TOKEN
 ```
 
-Paste the raw value only when prompted. Do not place it directly in the command or shell history. Verify only the secret name:
+Paste the raw value only when prompted. Do not place it directly in the command or shell history. `wrangler secret put` creates and deploys a Worker version immediately. On the first use, approve creation of an account-level `workers.dev` subdomain if prompted.
+
+Then deploy the reviewed local code and configuration:
+
+```bash
+pnpm exec wrangler deploy
+```
+
+Existing secrets are preserved by deployment. Wrangler prints the final origin, such as:
+
+```text
+https://linkwisp.YOUR_SUBDOMAIN.workers.dev
+```
+
+Verify only the secret name:
 
 ```bash
 pnpm exec wrangler secret list

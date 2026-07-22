@@ -1,8 +1,3 @@
-interface Env {
-  DB: D1Database;
-  ACCESS_TOKEN: string;
-}
-
 interface CreateLinkBody {
   destination?: unknown;
   customCode?: unknown;
@@ -30,6 +25,7 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
   "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS"
 };
+const TOKEN_ENCODER = new TextEncoder();
 
 function json(data: unknown, status = 200): Response {
   return Response.json(data, { status, headers: CORS_HEADERS });
@@ -42,9 +38,17 @@ function randomValue(length: number): string {
 }
 
 async function hashToken(token: string): Promise<string> {
-  const bytes = new TextEncoder().encode(token);
+  const bytes = TOKEN_ENCODER.encode(token);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+}
+
+async function timingSafeTokenMatch(left: string, right: string): Promise<boolean> {
+  const [leftDigest, rightDigest] = await Promise.all([
+    crypto.subtle.digest("SHA-256", TOKEN_ENCODER.encode(left)),
+    crypto.subtle.digest("SHA-256", TOKEN_ENCODER.encode(right))
+  ]);
+  return crypto.subtle.timingSafeEqual(leftDigest, rightDigest);
 }
 
 function bearerToken(request: Request): string | null {
@@ -52,16 +56,18 @@ function bearerToken(request: Request): string | null {
   return authorization?.startsWith("Bearer ") ? authorization.slice(7) : null;
 }
 
-function isCreatorAuthorized(request: Request, env: Env): boolean {
+async function isCreatorAuthorized(request: Request, env: Env): Promise<boolean> {
   const token = bearerToken(request);
-  return Boolean(env.ACCESS_TOKEN) && token === env.ACCESS_TOKEN;
+  if (!token || !env.ACCESS_TOKEN) return false;
+  return timingSafeTokenMatch(token, env.ACCESS_TOKEN);
 }
 
 async function isLinkAuthorized(request: Request, link: LinkRow, env: Env): Promise<boolean> {
   const token = bearerToken(request);
   if (!token) return false;
-  if (token === env.ACCESS_TOKEN) return true;
-  return Boolean(link.management_token_hash) && await hashToken(token) === link.management_token_hash;
+  if (env.ACCESS_TOKEN && await timingSafeTokenMatch(token, env.ACCESS_TOKEN)) return true;
+  if (!link.management_token_hash) return false;
+  return timingSafeTokenMatch(await hashToken(token), link.management_token_hash);
 }
 
 function validateDestination(value: unknown): string | null {
@@ -102,7 +108,7 @@ async function findLink(code: string, env: Env): Promise<LinkRow | null> {
 }
 
 async function createLink(request: Request, env: Env): Promise<Response> {
-  if (!isCreatorAuthorized(request, env)) return json({ error: "Invalid access code." }, 401);
+  if (!await isCreatorAuthorized(request, env)) return json({ error: "Invalid access code." }, 401);
 
   let body: CreateLinkBody;
   try {
@@ -228,7 +234,7 @@ export default {
 
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
     if (request.method === "GET" && url.pathname === "/api/session") {
-      return isCreatorAuthorized(request, env)
+      return await isCreatorAuthorized(request, env)
         ? json({ status: "ok" })
         : json({ error: "Invalid access code." }, 401);
     }

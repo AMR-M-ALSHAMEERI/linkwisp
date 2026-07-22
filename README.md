@@ -83,6 +83,8 @@ QR codes are generated locally from completed short URLs. LinkWisp does not send
 
 First-run onboarding explains the two connection values and verifies the Worker address plus access code without creating a link. Connection settings can run the same test again whenever configuration changes.
 
+Wrangler generates the Worker's `Env` binding type from `wrangler.jsonc`, and the workspace check rejects stale generated types. Owner and per-link credentials are compared as fixed-length SHA-256 digests through Cloudflare's timing-safe Web Crypto operation rather than ordinary string equality.
+
 The popup is organized into Create, Links, and Settings views. Global actions report through an accessible floating notification, while contextual onboarding and QR state messages remain beside the content they explain.
 
 The Settings view includes a compact **About LinkWisp** row. It opens a focused dialog containing the installed version, developer identity, project link, installation guide, and privacy summary. Its version is read from the installed extension manifest so it cannot drift from the packaged release.

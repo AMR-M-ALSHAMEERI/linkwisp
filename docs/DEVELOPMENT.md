@@ -175,6 +175,14 @@ The local MVP has been verified against a production Worker and D1 database. Fol
 
 Never commit Cloudflare login credentials, Wrangler OAuth credentials, recovery codes, `.dev.vars`, database exports, or the link-creation access token. The D1 database ID in `wrangler.jsonc` identifies a binding but does not authorize Cloudflare account access.
 
+`apps/worker/worker-configuration.d.ts` is generated from `wrangler.jsonc` and committed. After adding or renaming a binding or required secret, regenerate it from `apps/worker`:
+
+```bash
+pnpm run types
+```
+
+The Worker check runs Wrangler's `--check` mode before TypeScript so CI fails when the generated binding contract is stale.
+
 ## GitHub workflow
 
 GitHub Actions automatically checks and builds pushes and pull requests to `main`. A pushed `v*` tag can publish a versioned extension ZIP and SHA-256 checksum. See [RELEASING.md](RELEASING.md) before creating a tag; pushing a release tag is a publishing action.
