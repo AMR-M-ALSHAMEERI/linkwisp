@@ -4,6 +4,8 @@ This guide is for users who do not need to read or build the source code.
 
 > LinkWisp v0.1.0 is available from the repository's [Releases page](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/v0.1.0). Download the Chrome ZIP, not GitHub's automatically generated source archives.
 
+The v0.1.0 release is for Chrome and Chromium browsers. A Firefox-compatible build is being validated on `main`, but it will not be offered as an end-user release until it passes a real Firefox desktop acceptance test.
+
 After extracting the release, double-click the included `INSTALL.html` for an offline copy of the essential setup, update, and troubleshooting instructions.
 
 ## Chrome and Chromium browsers
@@ -51,6 +53,8 @@ Downloading LinkWisp does not grant access to the maintainer's Cloudflare accoun
 - **Settings** contains connection verification, the setup guide, local backup tools, and an **About LinkWisp** row. Select that row to see the installed version, developer links, project links, and privacy summary in a dialog.
 
 LinkWisp remembers the selected view during the browser session. Success and error notifications float at the top of the visible popup, so you do not need to scroll to find the result of an action.
+
+Selecting **Clear** in Links opens a confirmation before anything is removed. It reports how many local records will be cleared and explains that online short links stay active. Export a backup first if you may need to restore the local history and per-link management keys.
 
 ![LinkWisp Create view](images/install/04-linkwisp-popup.png)
 

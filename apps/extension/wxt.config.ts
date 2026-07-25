@@ -1,7 +1,8 @@
 import { defineConfig } from "wxt";
+import { browserSpecificManifest } from "./lib/browser-target";
 
 export default defineConfig({
-  manifest: {
+  manifest: ({ browser }) => ({
     name: "LinkWisp",
     description: "Create clean, shareable short links while keeping history on your device.",
     icons: {
@@ -23,14 +24,6 @@ export default defineConfig({
       "http://127.0.0.1:8787/*",
       "https://*.workers.dev/*"
     ],
-    commands: {
-      "shorten-current-tab": {
-        suggested_key: {
-          default: "Ctrl+Shift+S",
-          mac: "Command+Shift+S"
-        },
-        description: "Shorten the current tab"
-      }
-    }
-  }
+    ...browserSpecificManifest(browser)
+  })
 });

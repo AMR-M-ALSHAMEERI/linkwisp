@@ -12,7 +12,7 @@ A local-first browser extension for creating clean, shareable short links throug
 
 ## Current status
 
-LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. The packaged GitHub Release has been tested against both a local Worker and a personal Cloudflare Worker + D1 production deployment. Development on `main` is preparing v0.2.0 with automated tests and a richer Edit Link dialog; the latest packaged release remains v0.1.0 until that milestone is complete.
+LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. The packaged GitHub Release has been tested against both a local Worker and a personal Cloudflare Worker + D1 production deployment. Development on `main` is preparing v0.2.0 with automated tests, a richer Edit Link dialog, and a Mozilla-linted Firefox build. The Firefox build remains a development target until it passes real-browser acceptance testing; the latest packaged release remains Chrome-only v0.1.0.
 
 ## Implemented MVP
 
@@ -21,6 +21,7 @@ LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. T
 - Generate a random short code or request a custom alias
 - Copy the result automatically
 - Keep searchable history locally in the extension
+- Confirm before clearing local history and management keys
 - Edit a destination or expiration without changing the short URL
 - Expire, disable, or delete links
 - Show branded, privacy-safe pages when a link is disabled, expired, or missing
@@ -28,6 +29,7 @@ LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. T
 - Offer a right-click action and keyboard shortcut
 - Export and import local history
 - Run automated extension and Worker/D1 tests on every GitHub push and release
+- Build and strictly lint a Firefox-compatible target on every GitHub push
 
 ## Architecture
 
@@ -66,6 +68,7 @@ Run the complete local verification suite with:
 pnpm check
 pnpm test
 pnpm build
+pnpm lint:firefox
 ```
 
 ## Repository layout
@@ -91,6 +94,8 @@ Link history can be exported as a versioned JSON backup and restored on another 
 History search and favorites run entirely inside the extension. Search terms and favorite choices are not sent to the Worker; favorite state is included in local backups.
 
 QR codes are generated locally from completed short URLs. LinkWisp does not send QR contents to an external QR service or store a second QR copy in D1.
+
+Firefox's manifest declares `browsingActivity` and `authenticationInfo` as required transmission categories because shortening sends the selected page URL and entered access code to the user-configured Worker. This is a platform disclosure of LinkWisp's core request, not an analytics feature; local history, favorites, search terms, and QR images remain on the device.
 
 When a public short link cannot redirect, the Worker returns a small branded status page instead of plain text. These pages do not reveal the destination, load external assets, run JavaScript, collect analytics, or permit search indexing.
 

@@ -26,6 +26,8 @@ jobs:
         run: pnpm check
       - name: Run automated tests
         run: pnpm test
+      - name: Build and lint Firefox extension
+        run: pnpm lint:firefox
       - name: Confirm tag matches extension version
         run: pnpm --filter @linkwisp/extension verify:release-version "$GITHUB_REF_NAME"
       - name: Build release archive and checksum

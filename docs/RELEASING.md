@@ -4,17 +4,20 @@ This guide is for project maintainers. End users should follow [INSTALL.md](INST
 
 ## What the automation does
 
-Every push and pull request to `main` runs type checks, automated tests, and production builds. Pushing a version tag such as `v0.1.0` starts the release workflow, which:
+Every push and pull request to `main` runs type checks, automated tests, Chrome and Worker production builds, and a strict Mozilla lint of the Firefox build. Pushing a version tag such as `v0.1.0` starts the release workflow, which:
 
 1. Installs the exact dependencies from `pnpm-lock.yaml`.
 2. Runs all TypeScript checks.
 3. Runs the extension and Worker/D1 automated tests.
-4. Confirms that the Git tag matches the extension package version.
-5. Builds the Chrome extension ZIP.
-6. Creates a SHA-256 checksum file beside the ZIP.
-7. Publishes both files in a GitHub Release with generated release notes.
+4. Builds and strictly lints the Firefox target without publishing it.
+5. Confirms that the Git tag matches the extension package version.
+6. Builds the Chrome extension ZIP.
+7. Creates a SHA-256 checksum file beside the ZIP.
+8. Publishes both Chrome files in a GitHub Release with generated release notes.
 
 The included `INSTALL.html`, extension assets, and `manifest.json` are all inside the ZIP. Node.js and pnpm are not required by people installing that finished archive.
+
+The current release workflow publishes only the tested Chrome archive. `pnpm zip:firefox` can prepare Firefox and source archives, but they must not be attached to a release until the exact Firefox build has passed the manual desktop checklist in `DEVELOPMENT.md`. A Firefox package distributed for normal installation must also be signed through Mozilla; the WXT ZIP alone is a development/submission artifact.
 
 ## Prepare a release
 
@@ -29,6 +32,7 @@ pnpm install --frozen-lockfile
 pnpm check
 pnpm test
 pnpm build
+pnpm lint:firefox
 pnpm release
 pnpm --filter @linkwisp/extension verify:release-version v0.1.0
 ```

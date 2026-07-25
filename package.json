@@ -6,11 +6,15 @@
   "packageManager": "pnpm@11.9.0",
   "scripts": {
     "dev:extension": "pnpm --filter @linkwisp/extension dev",
+    "dev:firefox": "pnpm --filter @linkwisp/extension dev:firefox",
     "dev:worker": "pnpm --filter @linkwisp/worker dev",
     "build": "pnpm -r build",
+    "build:firefox": "pnpm --filter @linkwisp/extension build:firefox",
     "check": "pnpm -r check",
+    "lint:firefox": "pnpm --filter @linkwisp/extension lint:firefox",
     "test": "pnpm -r test",
     "zip": "pnpm --filter @linkwisp/extension zip",
+    "zip:firefox": "pnpm --filter @linkwisp/extension zip:firefox",
     "release": "pnpm --filter @linkwisp/extension release"
   }
 }

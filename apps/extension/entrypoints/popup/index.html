@@ -56,7 +56,7 @@
       <section class="history-section view-panel hidden" data-view-panel="links" aria-labelledby="history-heading">
         <div class="section-heading">
           <h2 id="history-heading">Your links</h2>
-          <button id="clear-history" class="text-button" type="button">Clear</button>
+          <button id="clear-history" class="text-button" type="button" aria-haspopup="dialog">Clear</button>
         </div>
         <label for="history-search">Search history</label>
         <input id="history-search" type="search" placeholder="Alias, short link, or destination" autocomplete="off" />
@@ -142,6 +142,17 @@
       </div>
       <p class="about-privacy">History and QR generation stay on this device. LinkWisp collects no click analytics.</p>
       <button id="close-about" class="secondary" type="button">Close</button>
+    </dialog>
+
+    <dialog id="clear-history-dialog" class="clear-history-dialog" aria-labelledby="clear-history-heading" aria-describedby="clear-history-explanation clear-history-warning">
+      <p class="eyebrow">LOCAL HISTORY</p>
+      <h2 id="clear-history-heading">Clear local links?</h2>
+      <p id="clear-history-explanation" class="clear-history-explanation"></p>
+      <p id="clear-history-warning" class="clear-history-warning">This cannot be undone unless you exported a backup.</p>
+      <div class="clear-history-actions">
+        <button id="cancel-clear-history" class="secondary" type="button" autofocus>Cancel</button>
+        <button id="confirm-clear-history" class="danger-button" type="button">Clear history</button>
+      </div>
     </dialog>
 
     <dialog id="edit-dialog" class="edit-dialog" aria-labelledby="edit-heading" aria-describedby="edit-intro edit-status">

@@ -20,6 +20,7 @@ import {
   buildEditLinkChanges,
   type EditExpirationChoice
 } from "../../lib/edit";
+import { clearHistoryCopy } from "../../lib/history-clear";
 
 const form = document.querySelector<HTMLFormElement>("#shorten-form")!;
 const destinationInput = document.querySelector<HTMLTextAreaElement>("#destination")!;
@@ -40,6 +41,11 @@ const viewPanels = [...document.querySelectorAll<HTMLElement>("[data-view-panel]
 const linksCount = document.querySelector<HTMLElement>("#links-count")!;
 const historyList = document.querySelector<HTMLOListElement>("#history-list")!;
 const clearHistoryButton = document.querySelector<HTMLButtonElement>("#clear-history")!;
+const clearHistoryDialog = document.querySelector<HTMLDialogElement>("#clear-history-dialog")!;
+const clearHistoryHeading = document.querySelector<HTMLElement>("#clear-history-heading")!;
+const clearHistoryExplanation = document.querySelector<HTMLElement>("#clear-history-explanation")!;
+const cancelClearHistoryButton = document.querySelector<HTMLButtonElement>("#cancel-clear-history")!;
+const confirmClearHistoryButton = document.querySelector<HTMLButtonElement>("#confirm-clear-history")!;
 const historySearchInput = document.querySelector<HTMLInputElement>("#history-search")!;
 const showMoreLinksButton = document.querySelector<HTMLButtonElement>("#show-more-links")!;
 const exportBackupButton = document.querySelector<HTMLButtonElement>("#export-backup")!;
@@ -653,9 +659,51 @@ historyList.addEventListener("click", async (event) => {
 });
 
 clearHistoryButton.addEventListener("click", async () => {
-  await browser.storage.local.remove("linkHistory");
-  renderHistory([]);
-  setStatus("Local history cleared. Online links were not deleted.", "success");
+  try {
+    const history = await loadHistory();
+    if (history.length === 0) {
+      setStatus("There is no local history to clear.");
+      return;
+    }
+
+    const copy = clearHistoryCopy(history.length);
+    clearHistoryHeading.textContent = copy.heading;
+    clearHistoryExplanation.textContent = copy.explanation;
+    clearHistoryDialog.showModal();
+  } catch (error) {
+    setStatus(error instanceof Error ? error.message : "Local history could not be loaded.", "error");
+  }
+});
+
+cancelClearHistoryButton.addEventListener("click", () => clearHistoryDialog.close());
+
+clearHistoryDialog.addEventListener("click", (event) => {
+  if (event.target !== clearHistoryDialog) return;
+  const bounds = clearHistoryDialog.getBoundingClientRect();
+  const outside = event.clientX < bounds.left
+    || event.clientX > bounds.right
+    || event.clientY < bounds.top
+    || event.clientY > bounds.bottom;
+  if (outside) clearHistoryDialog.close();
+});
+
+confirmClearHistoryButton.addEventListener("click", async () => {
+  cancelClearHistoryButton.disabled = true;
+  confirmClearHistoryButton.disabled = true;
+  try {
+    await browser.storage.local.remove("linkHistory");
+    historySearchInput.value = "";
+    historyExpanded = false;
+    renderHistory([]);
+    clearHistoryDialog.close();
+    setStatus("Local history cleared. Online links remain active.", "success");
+  } catch (error) {
+    clearHistoryDialog.close();
+    setStatus(error instanceof Error ? error.message : "Local history could not be cleared.", "error");
+  } finally {
+    cancelClearHistoryButton.disabled = false;
+    confirmClearHistoryButton.disabled = false;
+  }
 });
 
 exportBackupButton.addEventListener("click", async () => {

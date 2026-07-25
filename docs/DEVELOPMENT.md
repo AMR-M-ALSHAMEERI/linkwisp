@@ -10,6 +10,7 @@ Install:
 - Node.js 22 or newer
 - pnpm 10 or newer
 - Google Chrome or another Chromium browser
+- Firefox 140 or newer only when performing real Firefox runtime testing
 - A free Cloudflare account for remote Worker deployment
 
 ## Get the repository
@@ -88,9 +89,35 @@ For the same sequence used by GitHub Actions:
 pnpm check
 pnpm test
 pnpm build
+pnpm lint:firefox
 ```
 
-GitHub Actions runs all three commands on pushes and pull requests. The release workflow repeats the checks before creating an archive, so a failing test prevents a new release from being published.
+GitHub Actions runs these commands on pushes and pull requests. The release workflow repeats the release checks before creating an archive, so a failing test prevents a new release from being published.
+
+## Build and validate Firefox
+
+Firefox does not need to be installed to build or statically validate the extension:
+
+```bash
+pnpm build:firefox
+pnpm lint:firefox
+```
+
+WXT produces a Firefox Manifest V2 build under `apps/extension/.output/firefox-mv2`. The second command rebuilds that target and runs Mozilla's `web-ext lint` with warnings treated as errors. CI runs this strict Firefox validation after the normal Chrome and Worker build.
+
+The Firefox manifest uses a stable add-on ID and requires Firefox desktop 140 or newer. LinkWisp sends the selected page URL and the user-entered access code to the configured Worker as part of its core shortening operation, so the manifest truthfully declares Mozilla's required `browsingActivity` and `authenticationInfo` data-transmission categories. History, favorites, search, and QR generation remain local.
+
+For a real desktop test, install Firefox and either run:
+
+```bash
+pnpm dev:firefox
+```
+
+or open `about:debugging#/runtime/this-firefox`, select **Load Temporary Add-on**, and choose `apps/extension/.output/firefox-mv2/manifest.json`. Verify toolbar opening, `Ctrl+Shift+S`, **Shorten this page**, settings, creation, history, dialogs, QR, backup, and lifecycle operations. Static linting is valuable, but it does not replace this real-browser acceptance test.
+
+WXT targets Firefox Manifest V2 by default. Its generated manifest converts the toolbar `action` to `browser_action`. LinkWisp uses `browserAction.openPopup()` for the Firefox context-menu path and Mozilla's `_execute_browser_action` command for the shortcut; Chrome continues using Manifest V3 `action.openPopup()` and the named `shorten-current-tab` command.
+
+Firefox applies different native form metrics and otherwise inherits oversized default text inside extension dialogs. A Firefox-only CSS feature query sets general action buttons and form controls to 11 pixels, reduces vertical padding by one pixel, and sets explicit line heights. Confirm that Firefox buttons, inputs, textareas, and selects visually match Chrome while navigation, favorite, history-action, toast-close, and label styles retain their specialized sizes.
 
 ## Test link lifecycle controls
 
@@ -116,7 +143,7 @@ Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions
 9. Let a temporary test link expire and confirm it returns the branded **Link expired** page with HTTP `410`.
 10. Check the status pages on a narrow mobile viewport, in dark mode, and with reduced motion enabled. Confirm they reveal no destination URL and make no external asset requests.
 
-**Clear local history** only removes records from this Chrome profile. It does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
+**Clear local history** first opens a confirmation showing the number of records and warning that local management keys will be removed. Cancel, `Esc`, and a backdrop click must leave history unchanged. Confirming removes records only from the current browser profile; it does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
 
 ## Test local backup and restore
 

@@ -30,3 +30,5 @@ jobs:
         run: pnpm test
       - name: Build applications
         run: pnpm build
+      - name: Build and lint Firefox extension
+        run: pnpm lint:firefox
