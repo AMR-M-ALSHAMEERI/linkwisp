@@ -24,6 +24,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Run type checks
         run: pnpm check
+      - name: Run automated tests
+        run: pnpm test
       - name: Confirm tag matches extension version
         run: pnpm --filter @linkwisp/extension verify:release-version "$GITHUB_REF_NAME"
       - name: Build release archive and checksum

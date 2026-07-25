@@ -8,12 +8,15 @@
     "build": "wrangler deploy --dry-run",
     "types": "wrangler types --include-runtime=false",
     "check:types": "wrangler types --include-runtime=false --check",
-    "check": "pnpm run check:types && tsc --noEmit",
+    "check": "pnpm run check:types && tsc --noEmit && tsc -p test/tsconfig.json",
+    "test": "vitest run",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "latest",
+    "@cloudflare/vitest-pool-workers": "latest",
     "typescript": "5.9.3",
+    "vitest": "^4.1.0",
     "wrangler": "latest"
   }
 }

@@ -26,6 +26,7 @@ LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. T
 - Generate QR codes locally
 - Offer a right-click action and keyboard shortcut
 - Export and import local history
+- Run automated extension and Worker/D1 tests on every GitHub push and release
 
 ## Architecture
 
@@ -57,6 +58,14 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 To operate an independent internet-accessible instance, see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). A custom domain is optional; a free `workers.dev` address is sufficient for personal and portfolio use.
 
 Maintainers can build checksummed release artifacts and publish them through a version tag by following [docs/RELEASING.md](docs/RELEASING.md).
+
+Run the complete local verification suite with:
+
+```bash
+pnpm check
+pnpm test
+pnpm build
+```
 
 ## Repository layout
 

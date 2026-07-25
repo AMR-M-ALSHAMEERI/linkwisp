@@ -4,14 +4,15 @@ This guide is for project maintainers. End users should follow [INSTALL.md](INST
 
 ## What the automation does
 
-Every push and pull request to `main` runs type checks and production builds. Pushing a version tag such as `v0.1.0` starts the release workflow, which:
+Every push and pull request to `main` runs type checks, automated tests, and production builds. Pushing a version tag such as `v0.1.0` starts the release workflow, which:
 
 1. Installs the exact dependencies from `pnpm-lock.yaml`.
 2. Runs all TypeScript checks.
-3. confirms that the Git tag matches the extension package version.
-4. Builds the Chrome extension ZIP.
-5. Creates a SHA-256 checksum file beside the ZIP.
-6. Publishes both files in a GitHub Release with generated release notes.
+3. Runs the extension and Worker/D1 automated tests.
+4. Confirms that the Git tag matches the extension package version.
+5. Builds the Chrome extension ZIP.
+6. Creates a SHA-256 checksum file beside the ZIP.
+7. Publishes both files in a GitHub Release with generated release notes.
 
 The included `INSTALL.html`, extension assets, and `manifest.json` are all inside the ZIP. Node.js and pnpm are not required by people installing that finished archive.
 
@@ -26,6 +27,7 @@ The included `INSTALL.html`, extension assets, and `manifest.json` are all insid
 ```bash
 pnpm install --frozen-lockfile
 pnpm check
+pnpm test
 pnpm build
 pnpm release
 pnpm --filter @linkwisp/extension verify:release-version v0.1.0

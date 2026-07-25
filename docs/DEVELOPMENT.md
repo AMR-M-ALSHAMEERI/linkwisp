@@ -67,6 +67,31 @@ Access code: the ACCESS_TOKEN value from apps/worker/.dev.vars
 
 The local Worker must remain running while testing creation and redirects. Local short links work only on the development computer. A deployed Worker provides a public `workers.dev` address, while the extension and its history remain local.
 
+## Run automated tests
+
+From the repository root:
+
+```bash
+pnpm test
+```
+
+This runs two complementary suites:
+
+- Extension unit tests run with Vitest and WXT's testing plugin. They cover URL cleaning, backup validation and merging, connection checks, API request construction, per-link credential selection, and API error handling.
+- Worker integration tests run locally inside Cloudflare's Workers runtime through its Vitest integration. They apply the real D1 migrations to an isolated test database and cover authorization, creation validation, redirects, unavailable-link pages, editing, disabling, enabling, expiration, and deletion.
+
+Tests never contact the production Worker or production D1 database. The Worker suite receives a test-only access token and isolated local D1 binding from `vitest.config.ts`. It loads `test/wrangler.test.jsonc` instead of the deployment configuration, so Cloudflare's test runtime does not read `.dev.vars` or any real credential.
+
+For the same sequence used by GitHub Actions:
+
+```bash
+pnpm check
+pnpm test
+pnpm build
+```
+
+GitHub Actions runs all three commands on pushes and pull requests. The release workflow repeats the checks before creating an archive, so a failing test prevents a new release from being published.
+
 ## Test link lifecycle controls
 
 After pulling a version that adds a migration, stop the local Worker with `Ctrl+C`, apply pending migrations, and start it again:
