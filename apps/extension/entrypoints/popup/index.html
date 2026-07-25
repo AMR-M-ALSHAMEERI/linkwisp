@@ -144,6 +144,42 @@
       <button id="close-about" class="secondary" type="button">Close</button>
     </dialog>
 
+    <dialog id="edit-dialog" class="edit-dialog" aria-labelledby="edit-heading" aria-describedby="edit-intro edit-status">
+      <p class="eyebrow">MANAGE LINK</p>
+      <h2 id="edit-heading">Edit short link</h2>
+      <div class="edit-link-identity">
+        <span id="edit-state" class="link-state"></span>
+        <p id="edit-short-url"></p>
+      </div>
+      <p id="edit-intro" class="edit-intro">The short URL and QR code stay the same. Change where they lead or adjust when the link expires.</p>
+      <form id="edit-form">
+        <label for="edit-destination">Destination</label>
+        <textarea id="edit-destination" rows="3" required spellcheck="false"></textarea>
+
+        <label for="edit-expiration">Expiration</label>
+        <select id="edit-expiration">
+          <option value="keep">Keep current expiration</option>
+          <option value="never">Never expires</option>
+          <option value="hour">In 1 hour</option>
+          <option value="day">In 1 day</option>
+          <option value="week">In 1 week</option>
+          <option value="custom">Custom date</option>
+        </select>
+        <p id="edit-current-expiration" class="edit-current-expiration"></p>
+
+        <div id="edit-custom-expiration-field" class="hidden">
+          <label for="edit-custom-expiration">Custom expiration</label>
+          <input id="edit-custom-expiration" type="datetime-local" />
+        </div>
+
+        <p id="edit-status" class="status edit-status" role="status"></p>
+        <div class="edit-actions">
+          <button id="save-edit" type="submit">Save changes</button>
+          <button id="cancel-edit" class="secondary" type="button">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
     <dialog id="qr-dialog" aria-labelledby="qr-heading">
       <h2 id="qr-heading">Short-link QR code</h2>
       <p id="qr-url" class="qr-url"></p>

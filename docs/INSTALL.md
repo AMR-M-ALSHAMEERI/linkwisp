@@ -56,6 +56,12 @@ LinkWisp remembers the selected view during the browser session. Success and err
 
 Do not delete or move the extracted folder while the extension is installed.
 
+## Edit a link
+
+Open **Links** and select **Edit** on a saved record. The dialog can change the destination, keep or remove the existing expiration, select a new one-hour/day/week expiration, or choose a custom future date.
+
+The alias, short URL, and existing QR code do not change. Selecting **Keep current expiration** changes only the destination. LinkWisp removes common tracking parameters from a new destination before saving it and keeps validation or service errors inside the dialog so they remain visible.
+
 ## Updating
 
 GitHub-installed Chrome extensions do not update automatically.

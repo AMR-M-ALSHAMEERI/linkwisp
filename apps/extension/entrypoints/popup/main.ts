@@ -16,6 +16,10 @@ import {
   parseBackup,
   recordKey
 } from "../../lib/backup";
+import {
+  buildEditLinkChanges,
+  type EditExpirationChoice
+} from "../../lib/edit";
 
 const form = document.querySelector<HTMLFormElement>("#shorten-form")!;
 const destinationInput = document.querySelector<HTMLTextAreaElement>("#destination")!;
@@ -59,6 +63,18 @@ const aboutDialog = document.querySelector<HTMLDialogElement>("#about-dialog")!;
 const openAboutButton = document.querySelector<HTMLButtonElement>("#open-about")!;
 const closeAboutButton = document.querySelector<HTMLButtonElement>("#close-about")!;
 const aboutVersions = [...document.querySelectorAll<HTMLElement>("[data-about-version]")];
+const editDialog = document.querySelector<HTMLDialogElement>("#edit-dialog")!;
+const editForm = document.querySelector<HTMLFormElement>("#edit-form")!;
+const editShortUrl = document.querySelector<HTMLElement>("#edit-short-url")!;
+const editState = document.querySelector<HTMLElement>("#edit-state")!;
+const editDestinationInput = document.querySelector<HTMLTextAreaElement>("#edit-destination")!;
+const editExpirationSelect = document.querySelector<HTMLSelectElement>("#edit-expiration")!;
+const editCurrentExpiration = document.querySelector<HTMLElement>("#edit-current-expiration")!;
+const editCustomExpirationField = document.querySelector<HTMLElement>("#edit-custom-expiration-field")!;
+const editCustomExpirationInput = document.querySelector<HTMLInputElement>("#edit-custom-expiration")!;
+const editStatus = document.querySelector<HTMLElement>("#edit-status")!;
+const saveEditButton = document.querySelector<HTMLButtonElement>("#save-edit")!;
+const cancelEditButton = document.querySelector<HTMLButtonElement>("#cancel-edit")!;
 
 let currentQrDataUrl = "";
 let currentQrCode = "";
@@ -66,6 +82,8 @@ let historyExpanded = false;
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
 let toastExitTimer: ReturnType<typeof setTimeout> | undefined;
 let brandMarkPromise: Promise<HTMLImageElement> | undefined;
+let currentEditRecordKey = "";
+let editSaving = false;
 
 type AppView = "create" | "links" | "settings";
 
@@ -95,6 +113,27 @@ function linkState(record: LinkRecord): "active" | "disabled" | "expired" {
   if (record.disabled) return "disabled";
   if (record.expiresAt && Date.parse(record.expiresAt) <= Date.now()) return "expired";
   return "active";
+}
+
+function showEditDialog(record: LinkRecord): void {
+  const state = linkState(record);
+  currentEditRecordKey = recordKey(record);
+  editShortUrl.textContent = record.shortUrl;
+  editShortUrl.title = record.shortUrl;
+  editState.dataset.state = state;
+  editState.textContent = state;
+  editDestinationInput.value = record.destination;
+  editExpirationSelect.value = "keep";
+  editCustomExpirationInput.value = "";
+  editCustomExpirationField.classList.add("hidden");
+  editCurrentExpiration.textContent = record.expiresAt
+    ? `Current: ${new Date(record.expiresAt).toLocaleString()}`
+    : "Current: never expires";
+  editStatus.textContent = "";
+  editStatus.dataset.kind = "";
+  editDialog.showModal();
+  editDestinationInput.focus();
+  editDestinationInput.select();
 }
 
 function actionButton(label: string, action: string, record: LinkRecord, danger = false): HTMLButtonElement {
@@ -377,6 +416,93 @@ aboutDialog.addEventListener("click", (event) => {
   if (outside) aboutDialog.close();
 });
 
+editExpirationSelect.addEventListener("change", () => {
+  editCustomExpirationField.classList.toggle(
+    "hidden",
+    editExpirationSelect.value !== "custom"
+  );
+  editStatus.textContent = "";
+  editStatus.dataset.kind = "";
+  if (editExpirationSelect.value === "custom") {
+    editCustomExpirationInput.focus();
+  }
+});
+
+editDestinationInput.addEventListener("input", () => {
+  editStatus.textContent = "";
+  editStatus.dataset.kind = "";
+});
+
+cancelEditButton.addEventListener("click", () => {
+  if (!editSaving) editDialog.close();
+});
+
+editDialog.addEventListener("cancel", (event) => {
+  if (editSaving) event.preventDefault();
+});
+
+editDialog.addEventListener("close", () => {
+  currentEditRecordKey = "";
+  editForm.reset();
+  editCustomExpirationField.classList.add("hidden");
+  editStatus.textContent = "";
+  editStatus.dataset.kind = "";
+});
+
+editDialog.addEventListener("click", (event) => {
+  if (event.target !== editDialog) return;
+  const bounds = editDialog.getBoundingClientRect();
+  const outside = event.clientX < bounds.left
+    || event.clientX > bounds.right
+    || event.clientY < bounds.top
+    || event.clientY > bounds.bottom;
+  if (outside && !editSaving) editDialog.close();
+});
+
+editForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!currentEditRecordKey) return;
+
+  editSaving = true;
+  saveEditButton.disabled = true;
+  cancelEditButton.disabled = true;
+  editStatus.textContent = "Saving changes...";
+  editStatus.dataset.kind = "";
+
+  try {
+    const history = await loadHistory();
+    const record = history.find((item) => recordKey(item) === currentEditRecordKey);
+    if (!record) throw new Error("This link is no longer in local history.");
+
+    const changes = buildEditLinkChanges(
+      record,
+      editDestinationInput.value,
+      editExpirationSelect.value as EditExpirationChoice,
+      editCustomExpirationInput.value
+    );
+    const settings = await loadSettings();
+    const updated = await updateShortLink(settings, record, changes.update);
+    await saveHistory(history.map((item) =>
+      recordKey(item) === currentEditRecordKey ? updated : item
+    ));
+
+    editDialog.close();
+    const trackingMessage = changes.removedTrackingParameters
+      ? ` ${changes.removedTrackingParameters} tracking parameter${changes.removedTrackingParameters === 1 ? "" : "s"} removed.`
+      : "";
+    setStatus(`Link updated.${trackingMessage}`, "success");
+  } catch (error) {
+    editStatus.textContent = error instanceof Error
+      ? error.message
+      : "The link could not be updated.";
+    editStatus.dataset.kind = "error";
+  } finally {
+    editSaving = false;
+    saveEditButton.disabled = false;
+    cancelEditButton.disabled = false;
+  }
+});
+
 showMoreLinksButton.addEventListener("click", async () => {
   historyExpanded = !historyExpanded;
   renderHistory(await loadHistory());
@@ -501,12 +627,8 @@ historyList.addEventListener("click", async (event) => {
     let nextHistory = history;
 
     if (button.dataset.action === "edit") {
-      const entered = window.prompt("New destination URL", record.destination);
-      if (entered === null) return;
-      const cleaned = cleanUrl(entered.trim());
-      const updated = await updateShortLink(settings, record, { destination: cleaned.url });
-      nextHistory = history.map((item) => recordKey(item) === recordKey(record) ? updated : item);
-      setStatus("Destination updated.", "success");
+      showEditDialog(record);
+      return;
     }
 
     if (button.dataset.action === "toggle") {

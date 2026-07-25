@@ -263,6 +263,46 @@ button:disabled { cursor: wait; opacity: 0.6; }
 .about-privacy { margin: 10px 0 0; border-top: 1px solid #e1ebe4; padding-top: 9px; }
 .about-dialog > button { margin-top: 13px; }
 
+.edit-dialog { width: min(346px, calc(100% - 24px)); }
+.edit-link-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 9px;
+  border: 1px solid #dde9e1;
+  border-radius: 11px;
+  background: #fbfdfb;
+  padding: 8px 9px;
+}
+.edit-link-identity p {
+  overflow: hidden;
+  margin: 0;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edit-intro {
+  margin: 9px 0 0;
+  color: #5f6f66;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.edit-current-expiration {
+  margin: 5px 0 0;
+  color: #77867d;
+  font-size: 9px;
+  line-height: 1.4;
+}
+.edit-status { min-height: 17px; margin-top: 8px; }
+.edit-actions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 2fr 1fr;
+}
+.edit-actions button { margin-top: 4px; }
+
 dialog {
   width: min(326px, calc(100% - 28px));
   border: 1px solid #d9e6dd;

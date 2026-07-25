@@ -107,11 +107,14 @@ Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions
 
 1. Create a link with **Never** selected and confirm that it redirects.
 2. Create a link with an expiration and confirm the expiry appears in Recent links.
-3. Select **Edit**, enter another HTTP or HTTPS destination, and confirm the same short URL opens the new destination.
-4. Select **Disable** and confirm the short URL returns the branded **Link paused** page with HTTP `404`; select **Enable** and confirm it redirects again.
-5. Select **Delete**, confirm the warning, and confirm the short URL returns the branded **Link not found** page with HTTP `404`.
-6. Let a temporary test link expire and confirm it returns the branded **Link expired** page with HTTP `410`.
-7. Check the status pages on a narrow mobile viewport, in dark mode, and with reduced motion enabled. Confirm they reveal no destination URL and make no external asset requests.
+3. Select **Edit** and confirm the dialog shows the same short URL, current state, destination, and current expiration.
+4. Change the destination to another HTTP or HTTPS URL containing a test `utm_*` parameter, leave **Keep current expiration** selected, save, and confirm the same short URL opens the cleaned new destination.
+5. Reopen **Edit** and test **Never expires**, a preset expiration, and a future custom date. Confirm the history card updates while the alias and short URL remain unchanged.
+6. Enter an invalid destination, a past custom date, and an unchanged form. Confirm each error remains visible inside the dialog and no update is sent. Confirm **Cancel**, `Esc`, and a backdrop click close without saving.
+7. Select **Disable** and confirm the short URL returns the branded **Link paused** page with HTTP `404`; select **Enable** and confirm it redirects again.
+8. Select **Delete**, confirm the warning, and confirm the short URL returns the branded **Link not found** page with HTTP `404`.
+9. Let a temporary test link expire and confirm it returns the branded **Link expired** page with HTTP `410`.
+10. Check the status pages on a narrow mobile viewport, in dark mode, and with reduced motion enabled. Confirm they reveal no destination URL and make no external asset requests.
 
 **Clear local history** only removes records from this Chrome profile. It does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
 
@@ -177,6 +180,8 @@ When changing the source mark:
 5. Reload the unpacked extension and inspect the toolbar, `chrome://extensions`, popup header, onboarding dialog, QR dialog, and long history content.
 
 The popup uses browser-native HTML and CSS. Visual changes must not hide focus indicators, state labels, backup warnings, or onboarding error messages.
+
+When the unpacked extension is reloaded, its installation listener clears LinkWisp's existing context-menu entries before recreating **Shorten this page**. This makes registration idempotent and prevents Chrome's `Cannot create item with duplicate id shorten-current-page` runtime error. After changing the background entrypoint, select **Reload** twice and confirm the extension's **Errors** view remains empty and the page context menu contains one LinkWisp action.
 
 ## Test popup navigation and notifications
 

@@ -12,7 +12,7 @@ A local-first browser extension for creating clean, shareable short links throug
 
 ## Current status
 
-LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. The packaged GitHub Release has been tested against both a local Worker and a personal Cloudflare Worker + D1 production deployment.
+LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. The packaged GitHub Release has been tested against both a local Worker and a personal Cloudflare Worker + D1 production deployment. Development on `main` is preparing v0.2.0 with automated tests and a richer Edit Link dialog; the latest packaged release remains v0.1.0 until that milestone is complete.
 
 ## Implemented MVP
 
@@ -21,6 +21,7 @@ LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. T
 - Generate a random short code or request a custom alias
 - Copy the result automatically
 - Keep searchable history locally in the extension
+- Edit a destination or expiration without changing the short URL
 - Expire, disable, or delete links
 - Show branded, privacy-safe pages when a link is disabled, expired, or missing
 - Generate QR codes locally
