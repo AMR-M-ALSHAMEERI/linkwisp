@@ -12,6 +12,7 @@
     "build:firefox": "pnpm --filter @linkwisp/extension build:firefox",
     "check": "pnpm -r check",
     "lint:firefox": "pnpm --filter @linkwisp/extension lint:firefox",
+    "prepare:firefox-submission": "pnpm zip:firefox && node apps/extension/scripts/prepare-firefox-submission.mjs",
     "test": "pnpm -r test",
     "zip": "pnpm --filter @linkwisp/extension zip",
     "zip:firefox": "pnpm --filter @linkwisp/extension zip:firefox",

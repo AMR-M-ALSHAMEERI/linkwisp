@@ -23,6 +23,8 @@
   <a href="docs/DEPLOYMENT.md">Self-host</a>
   ·
   <a href="CHANGELOG.md">Changelog</a>
+  ·
+  <a href="PRIVACY.md">Privacy</a>
 </p>
 
 <p align="center">
@@ -116,7 +118,7 @@ docs/             Installation, deployment, development, and release guides
 
 LinkWisp collects no analytics. History, favorites, search terms, preferences, and generated QR images remain on the device. The configured Worker receives only information required to create or manage a mapping. Public unavailable-link pages reveal no destination, load no external assets, run no JavaScript, and are marked against caching and indexing.
 
-Backups intentionally exclude the main service access code, but they contain per-link management keys and should be stored securely. See the implementation and deployment guides for the complete trust boundaries.
+Backups intentionally exclude the main service access code, but they contain per-link management keys and should be stored securely. See the complete [privacy policy](PRIVACY.md) and deployment guide for the trust boundaries.
 
 ## Developer
 

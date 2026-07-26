@@ -19,6 +19,8 @@ The included `INSTALL.html`, extension assets, and `manifest.json` are all insid
 
 The current release workflow publishes only the tested Chrome archive. `pnpm zip:firefox` can prepare Firefox and source archives, but they must not be attached to a release until the exact Firefox build has passed the manual desktop checklist in `DEVELOPMENT.md`. A Firefox package distributed for normal installation must also be signed through Mozilla; the WXT ZIP alone is a development/submission artifact.
 
+For Mozilla self-distribution, follow [FIREFOX_DISTRIBUTION.md](FIREFOX_DISTRIBUTION.md). The dedicated `pnpm prepare:firefox-submission` command creates an unsigned Firefox upload, a complete Git-archived reviewer source package, review notes, and checksums from one clean commit. Do not use WXT's smaller automatic `*-sources.zip` as the Mozilla reviewer source because it omits the workspace lockfile and complete build instructions.
+
 ## Prepare a release
 
 1. Decide the version number using semantic versioning: patch for compatible fixes, minor for compatible features, and major for breaking changes.
