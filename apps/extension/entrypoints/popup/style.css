@@ -273,14 +273,15 @@ button:disabled { cursor: wait; opacity: 0.6; }
 .about-privacy { margin: 10px 0 0; border-top: 1px solid #e1ebe4; padding-top: 9px; }
 .about-dialog > button { margin-top: 13px; }
 
-.clear-history-dialog { width: min(336px, calc(100% - 28px)); }
-.clear-history-explanation {
+.confirmation-dialog { width: min(336px, calc(100% - 28px)); }
+.confirmation-explanation {
   margin: 10px 0 0;
   color: #526159;
   font-size: 10px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
-.clear-history-warning {
+.confirmation-warning {
   margin: 10px 0 0;
   border: 1px solid #ead2cd;
   border-radius: 11px;
@@ -290,12 +291,12 @@ button:disabled { cursor: wait; opacity: 0.6; }
   line-height: 1.45;
   padding: 9px 10px;
 }
-.clear-history-actions {
+.confirmation-actions {
   display: grid;
   gap: 8px;
   grid-template-columns: 1fr 1fr;
 }
-.clear-history-actions button { margin-top: 12px; }
+.confirmation-actions button { margin-top: 12px; }
 .danger-button {
   background: linear-gradient(135deg, #a84439 0%, #8c3028 100%);
   color: white;

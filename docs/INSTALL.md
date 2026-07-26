@@ -2,9 +2,9 @@
 
 This guide is for users who do not need to read or build the source code.
 
-> LinkWisp v0.1.0 is available from the repository's [Releases page](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/v0.1.0). Download the Chrome ZIP, not GitHub's automatically generated source archives.
+> Download the newest `linkwisp-X.Y.Z-chrome.zip` from the repository's [Releases page](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest), not GitHub's automatically generated source archives.
 
-The v0.1.0 release is for Chrome and Chromium browsers. A Firefox-compatible build is being validated on `main`, but it will not be offered as an end-user release until it passes a real Firefox desktop acceptance test.
+The GitHub release is for Chrome and Chromium browsers. Firefox compatibility is built, linted, and tested from source, but an end-user Firefox archive will not be offered until it is signed through Mozilla.
 
 After extracting the release, double-click the included `INSTALL.html` for an offline copy of the essential setup, update, and troubleshooting instructions.
 
@@ -23,7 +23,7 @@ After Developer mode is enabled, Chrome displays the **Load unpacked** control:
 
 ![Chrome Extensions page with Load unpacked available](images/install/01-load-unpacked.png)
 
-After selecting the folder containing `manifest.json`, confirm that Chrome shows LinkWisp version `0.1.0` and that its switch is enabled:
+After selecting the folder containing `manifest.json`, confirm that Chrome shows the version you downloaded and that its switch is enabled. The screenshot below records the original v0.1.0 installation flow:
 
 ![LinkWisp version 0.1.0 loaded and enabled in Chrome](images/install/02-linkwisp-loaded.png)
 
@@ -65,6 +65,8 @@ Do not delete or move the extracted folder while the extension is installed.
 Open **Links** and select **Edit** on a saved record. The dialog can change the destination, keep or remove the existing expiration, select a new one-hour/day/week expiration, or choose a custom future date.
 
 The alias, short URL, and existing QR code do not change. Selecting **Keep current expiration** changes only the destination. LinkWisp removes common tracking parameters from a new destination before saving it and keeps validation or service errors inside the dialog so they remain visible.
+
+Selecting **Delete** opens LinkWisp's branded destructive-action dialog. It explains that the online mapping will permanently stop redirecting. Cancel, `Esc`, and clicking outside the dialog leave both the online link and local record unchanged.
 
 ## Updating
 

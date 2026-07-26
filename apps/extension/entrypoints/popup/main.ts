@@ -20,7 +20,11 @@ import {
   buildEditLinkChanges,
   type EditExpirationChoice
 } from "../../lib/edit";
-import { clearHistoryCopy } from "../../lib/history-clear";
+import {
+  clearHistoryConfirmation,
+  deleteLinkConfirmation,
+  type ConfirmationCopy
+} from "../../lib/confirmation";
 
 const form = document.querySelector<HTMLFormElement>("#shorten-form")!;
 const destinationInput = document.querySelector<HTMLTextAreaElement>("#destination")!;
@@ -41,11 +45,13 @@ const viewPanels = [...document.querySelectorAll<HTMLElement>("[data-view-panel]
 const linksCount = document.querySelector<HTMLElement>("#links-count")!;
 const historyList = document.querySelector<HTMLOListElement>("#history-list")!;
 const clearHistoryButton = document.querySelector<HTMLButtonElement>("#clear-history")!;
-const clearHistoryDialog = document.querySelector<HTMLDialogElement>("#clear-history-dialog")!;
-const clearHistoryHeading = document.querySelector<HTMLElement>("#clear-history-heading")!;
-const clearHistoryExplanation = document.querySelector<HTMLElement>("#clear-history-explanation")!;
-const cancelClearHistoryButton = document.querySelector<HTMLButtonElement>("#cancel-clear-history")!;
-const confirmClearHistoryButton = document.querySelector<HTMLButtonElement>("#confirm-clear-history")!;
+const confirmationDialog = document.querySelector<HTMLDialogElement>("#confirmation-dialog")!;
+const confirmationEyebrow = document.querySelector<HTMLElement>("#confirmation-eyebrow")!;
+const confirmationHeading = document.querySelector<HTMLElement>("#confirmation-heading")!;
+const confirmationExplanation = document.querySelector<HTMLElement>("#confirmation-explanation")!;
+const confirmationWarning = document.querySelector<HTMLElement>("#confirmation-warning")!;
+const cancelConfirmationButton = document.querySelector<HTMLButtonElement>("#cancel-confirmation")!;
+const confirmActionButton = document.querySelector<HTMLButtonElement>("#confirm-action")!;
 const historySearchInput = document.querySelector<HTMLInputElement>("#history-search")!;
 const showMoreLinksButton = document.querySelector<HTMLButtonElement>("#show-more-links")!;
 const exportBackupButton = document.querySelector<HTMLButtonElement>("#export-backup")!;
@@ -90,8 +96,32 @@ let toastExitTimer: ReturnType<typeof setTimeout> | undefined;
 let brandMarkPromise: Promise<HTMLImageElement> | undefined;
 let currentEditRecordKey = "";
 let editSaving = false;
+let resolveConfirmation: ((confirmed: boolean) => void) | undefined;
 
 type AppView = "create" | "links" | "settings";
+
+function finishConfirmation(confirmed: boolean): void {
+  const resolve = resolveConfirmation;
+  if (!resolve) return;
+  resolveConfirmation = undefined;
+  if (confirmationDialog.open) confirmationDialog.close();
+  resolve(confirmed);
+}
+
+function requestConfirmation(copy: ConfirmationCopy): Promise<boolean> {
+  if (confirmationDialog.open || resolveConfirmation) return Promise.resolve(false);
+
+  confirmationEyebrow.textContent = copy.eyebrow;
+  confirmationHeading.textContent = copy.heading;
+  confirmationExplanation.textContent = copy.explanation;
+  confirmationWarning.textContent = copy.warning;
+  confirmActionButton.textContent = copy.confirmLabel;
+
+  return new Promise((resolve) => {
+    resolveConfirmation = resolve;
+    confirmationDialog.showModal();
+  });
+}
 
 async function loadSettings(): Promise<Settings> {
   const result = await browser.storage.local.get(["serviceUrl", "accessToken"]);
@@ -644,7 +674,7 @@ historyList.addEventListener("click", async (event) => {
     }
 
     if (button.dataset.action === "delete") {
-      if (!window.confirm(`Permanently delete ${record.shortUrl}?`)) return;
+      if (!await requestConfirmation(deleteLinkConfirmation(record.shortUrl))) return;
       await deleteShortLink(settings, record);
       nextHistory = history.filter((item) => recordKey(item) !== recordKey(record));
       setStatus("Link deleted.", "success");
@@ -666,44 +696,36 @@ clearHistoryButton.addEventListener("click", async () => {
       return;
     }
 
-    const copy = clearHistoryCopy(history.length);
-    clearHistoryHeading.textContent = copy.heading;
-    clearHistoryExplanation.textContent = copy.explanation;
-    clearHistoryDialog.showModal();
-  } catch (error) {
-    setStatus(error instanceof Error ? error.message : "Local history could not be loaded.", "error");
-  }
-});
-
-cancelClearHistoryButton.addEventListener("click", () => clearHistoryDialog.close());
-
-clearHistoryDialog.addEventListener("click", (event) => {
-  if (event.target !== clearHistoryDialog) return;
-  const bounds = clearHistoryDialog.getBoundingClientRect();
-  const outside = event.clientX < bounds.left
-    || event.clientX > bounds.right
-    || event.clientY < bounds.top
-    || event.clientY > bounds.bottom;
-  if (outside) clearHistoryDialog.close();
-});
-
-confirmClearHistoryButton.addEventListener("click", async () => {
-  cancelClearHistoryButton.disabled = true;
-  confirmClearHistoryButton.disabled = true;
-  try {
+    if (!await requestConfirmation(clearHistoryConfirmation(history.length))) return;
+    clearHistoryButton.disabled = true;
     await browser.storage.local.remove("linkHistory");
     historySearchInput.value = "";
     historyExpanded = false;
     renderHistory([]);
-    clearHistoryDialog.close();
     setStatus("Local history cleared. Online links remain active.", "success");
   } catch (error) {
-    clearHistoryDialog.close();
     setStatus(error instanceof Error ? error.message : "Local history could not be cleared.", "error");
   } finally {
-    cancelClearHistoryButton.disabled = false;
-    confirmClearHistoryButton.disabled = false;
+    clearHistoryButton.disabled = false;
   }
+});
+
+cancelConfirmationButton.addEventListener("click", () => finishConfirmation(false));
+confirmActionButton.addEventListener("click", () => finishConfirmation(true));
+
+confirmationDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+  finishConfirmation(false);
+});
+
+confirmationDialog.addEventListener("click", (event) => {
+  if (event.target !== confirmationDialog) return;
+  const bounds = confirmationDialog.getBoundingClientRect();
+  const outside = event.clientX < bounds.left
+    || event.clientX > bounds.right
+    || event.clientY < bounds.top
+    || event.clientY > bounds.bottom;
+  if (outside) finishConfirmation(false);
 });
 
 exportBackupButton.addEventListener("click", async () => {

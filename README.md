@@ -12,7 +12,7 @@ A local-first browser extension for creating clean, shareable short links throug
 
 ## Current status
 
-LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. The packaged GitHub Release has been tested against both a local Worker and a personal Cloudflare Worker + D1 production deployment. Development on `main` is preparing v0.2.0 with automated tests, a richer Edit Link dialog, and a Mozilla-linted Firefox build. The Firefox build remains a development target until it passes real-browser acceptance testing; the latest packaged release remains Chrome-only v0.1.0.
+LinkWisp v0.2.0 is being prepared as a release candidate after passing local Chrome and Firefox acceptance testing, automated extension and Worker/D1 tests, production builds, and strict Mozilla linting. The downloadable GitHub release remains Chrome-only until Firefox distribution is signed through Mozilla.
 
 ## Implemented MVP
 
@@ -21,7 +21,7 @@ LinkWisp v0.1.0 is a working local-first MVP for Chrome and Chromium browsers. T
 - Generate a random short code or request a custom alias
 - Copy the result automatically
 - Keep searchable history locally in the extension
-- Confirm before clearing local history and management keys
+- Confirm destructive local-history clearing and online link deletion
 - Edit a destination or expiration without changing the short URL
 - Expire, disable, or delete links
 - Show branded, privacy-safe pages when a link is disabled, expired, or missing
@@ -52,7 +52,7 @@ The maintainer's personal production deployment is available at [`linkwisp.amr-m
 
 ## Install the GitHub release
 
-[LinkWisp v0.1.0](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/v0.1.0) is available from GitHub Releases with a Chrome ZIP and SHA-256 checksum. Each release ZIP includes `INSTALL.html`, which can be opened by double-clicking after extraction. See [docs/INSTALL.md](docs/INSTALL.md) for the same instructions online.
+The [latest published LinkWisp release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest) is available with a Chrome ZIP and SHA-256 checksum. Each release ZIP includes `INSTALL.html`, which can be opened by double-clicking after extraction. See [docs/INSTALL.md](docs/INSTALL.md) for the same instructions online and [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Development setup
 

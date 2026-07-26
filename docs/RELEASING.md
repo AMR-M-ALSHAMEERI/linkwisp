@@ -4,7 +4,7 @@ This guide is for project maintainers. End users should follow [INSTALL.md](INST
 
 ## What the automation does
 
-Every push and pull request to `main` runs type checks, automated tests, Chrome and Worker production builds, and a strict Mozilla lint of the Firefox build. Pushing a version tag such as `v0.1.0` starts the release workflow, which:
+Every push and pull request to `main` runs type checks, automated tests, Chrome and Worker production builds, and a strict Mozilla lint of the Firefox build. Pushing a version tag such as `v0.2.0` starts the release workflow, which:
 
 1. Installs the exact dependencies from `pnpm-lock.yaml`.
 2. Runs all TypeScript checks.
@@ -34,18 +34,18 @@ pnpm test
 pnpm build
 pnpm lint:firefox
 pnpm release
-pnpm --filter @linkwisp/extension verify:release-version v0.1.0
+pnpm --filter @linkwisp/extension verify:release-version v0.2.0
 ```
 
-Replace `v0.1.0` with the version being prepared. Inspect the ZIP under `apps/extension/.output/` and test it in a clean Chrome profile before publishing.
+Replace `v0.2.0` with the version being prepared. Inspect the ZIP under `apps/extension/.output/` and test it in a clean Chrome profile before publishing.
 
 ## Publish a release
 
 Commit and push the prepared version first. Creating and pushing the tag is the publishing trigger:
 
 ```bash
-git tag -a v0.1.0 -m "LinkWisp v0.1.0"
-git push origin v0.1.0
+git tag -a v0.2.0 -m "LinkWisp v0.2.0"
+git push origin v0.2.0
 ```
 
 Do not reuse or move a published version tag. If a release needs a correction, prepare a new patch version instead. Monitor the **Actions** page, then confirm the GitHub Release contains one ZIP and its matching `.sha256` file.
@@ -55,8 +55,8 @@ Do not reuse or move a published version tag. If a release needs a correction, p
 On PowerShell, a user or maintainer can compare the downloaded ZIP with its published checksum:
 
 ```powershell
-Get-FileHash .\linkwisp-0.1.0-chrome.zip -Algorithm SHA256
-Get-Content .\linkwisp-0.1.0-chrome.zip.sha256
+Get-FileHash .\linkwisp-0.2.0-chrome.zip -Algorithm SHA256
+Get-Content .\linkwisp-0.2.0-chrome.zip.sha256
 ```
 
 The two hexadecimal hashes must match. A mismatch means the file is incomplete or different from the file produced by the release workflow.

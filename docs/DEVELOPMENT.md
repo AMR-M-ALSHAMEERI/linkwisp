@@ -139,11 +139,11 @@ Rebuild the extension and select **Reload** for LinkWisp on `chrome://extensions
 5. Reopen **Edit** and test **Never expires**, a preset expiration, and a future custom date. Confirm the history card updates while the alias and short URL remain unchanged.
 6. Enter an invalid destination, a past custom date, and an unchanged form. Confirm each error remains visible inside the dialog and no update is sent. Confirm **Cancel**, `Esc`, and a backdrop click close without saving.
 7. Select **Disable** and confirm the short URL returns the branded **Link paused** page with HTTP `404`; select **Enable** and confirm it redirects again.
-8. Select **Delete**, confirm the warning, and confirm the short URL returns the branded **Link not found** page with HTTP `404`.
+8. Select **Delete** and confirm the branded dialog identifies permanent online deletion. Cancel with the button, `Esc`, and backdrop before approving once; confirm no request occurs on cancellation, the local record remains until the Worker succeeds, and the deleted short URL returns the branded **Link not found** page with HTTP `404`.
 9. Let a temporary test link expire and confirm it returns the branded **Link expired** page with HTTP `410`.
 10. Check the status pages on a narrow mobile viewport, in dark mode, and with reduced motion enabled. Confirm they reveal no destination URL and make no external asset requests.
 
-**Clear local history** first opens a confirmation showing the number of records and warning that local management keys will be removed. Cancel, `Esc`, and a backdrop click must leave history unchanged. Confirming removes records only from the current browser profile; it does not delete mappings from D1. Use each link's **Delete** action when the online mapping must be removed.
+**Clear local history** and per-link **Delete** share one branded destructive-action dialog with action-specific explanations. Clear shows the record count and warns that local management keys will be removed; Delete identifies permanent online mapping removal. Cancel, `Esc`, and a backdrop click must leave state unchanged. Confirming Clear removes only browser-local records, while confirming Delete calls the Worker and removes the local record only after the service succeeds.
 
 ## Test local backup and restore
 

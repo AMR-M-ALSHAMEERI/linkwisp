@@ -91,7 +91,7 @@
         <button id="open-about" class="about-trigger" type="button">
           <span>
             <strong>About LinkWisp</strong>
-            <small>Version <span data-about-version>0.1.0</span></small>
+            <small>Version <span data-about-version>0.2.0</span></small>
           </span>
           <span class="about-arrow" aria-hidden="true">&rsaquo;</span>
         </button>
@@ -131,7 +131,7 @@
         <div>
           <p class="eyebrow">ABOUT THE EXTENSION</p>
           <h2 id="about-heading">LinkWisp</h2>
-          <p>Version <span data-about-version>0.1.0</span></p>
+          <p>Version <span data-about-version>0.2.0</span></p>
         </div>
       </div>
       <p class="about-copy">A local-first tool for creating clean, shareable short links through a service you control.</p>
@@ -144,14 +144,14 @@
       <button id="close-about" class="secondary" type="button">Close</button>
     </dialog>
 
-    <dialog id="clear-history-dialog" class="clear-history-dialog" aria-labelledby="clear-history-heading" aria-describedby="clear-history-explanation clear-history-warning">
-      <p class="eyebrow">LOCAL HISTORY</p>
-      <h2 id="clear-history-heading">Clear local links?</h2>
-      <p id="clear-history-explanation" class="clear-history-explanation"></p>
-      <p id="clear-history-warning" class="clear-history-warning">This cannot be undone unless you exported a backup.</p>
-      <div class="clear-history-actions">
-        <button id="cancel-clear-history" class="secondary" type="button" autofocus>Cancel</button>
-        <button id="confirm-clear-history" class="danger-button" type="button">Clear history</button>
+    <dialog id="confirmation-dialog" class="confirmation-dialog" aria-labelledby="confirmation-heading" aria-describedby="confirmation-explanation confirmation-warning">
+      <p id="confirmation-eyebrow" class="eyebrow"></p>
+      <h2 id="confirmation-heading"></h2>
+      <p id="confirmation-explanation" class="confirmation-explanation"></p>
+      <p id="confirmation-warning" class="confirmation-warning"></p>
+      <div class="confirmation-actions">
+        <button id="cancel-confirmation" class="secondary" type="button" autofocus>Cancel</button>
+        <button id="confirm-action" class="danger-button" type="button"></button>
       </div>
     </dialog>
 
