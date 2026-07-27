@@ -16,7 +16,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest">Download</a>
+  <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest">Chrome download</a>
+  ·
+  <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0">Firefox download</a>
   ·
   <a href="docs/INSTALL.md">Install</a>
   ·
@@ -77,7 +79,7 @@ Your production access code is a Cloudflare secret—it is never committed, pack
 | Local state | Browser storage for history, favorites, settings, and per-link management data |
 | Security | Cloudflare secrets, timing-safe credential comparison, restricted status pages, no credential in releases |
 | Quality | 45 automated tests, generated Worker binding checks, production builds, strict Mozilla lint |
-| Delivery | GitHub Actions CI, version-gated releases, Chrome ZIP, offline installer, SHA-256 checksum |
+| Delivery | GitHub Actions CI, version-gated Chrome ZIP, Mozilla-signed Firefox XPI, offline installer, SHA-256 checksums |
 
 ### Request and redirect boundaries
 
@@ -88,11 +90,11 @@ Your production access code is a Cloudflare secret—it is never committed, pack
 
 ## Install or self-host
 
-The [latest GitHub Release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest) provides the Chrome ZIP and its SHA-256 checksum. The archive includes an offline `INSTALL.html`; the same walkthrough is available in [docs/INSTALL.md](docs/INSTALL.md).
+The [latest GitHub Release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest) provides the Chrome ZIP and its SHA-256 checksum. The archive includes an offline `INSTALL.html`. Firefox users can download the separately audited [Mozilla-signed Firefox v0.2.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0). The complete walkthrough for both browsers is available in [docs/INSTALL.md](docs/INSTALL.md).
 
 LinkWisp is a self-hosted tool, not a shared public shortening account. To create links, deploy the Worker and D1 database to your own Cloudflare account by following [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md), then enter that Worker address and your private access code during onboarding. A custom domain is optional; a `workers.dev` address is sufficient.
 
-The Firefox target has passed real-browser acceptance testing and strict Mozilla linting. A Mozilla-signed self-distributed package is planned; the current public release remains Chrome-only.
+The Firefox XPI passed strict Mozilla linting, Mozilla's automatic validation and signing, a local artifact comparison, and permanent-installation testing in ordinary Firefox. It is self-distributed through Mozilla's unlisted channel, so it is downloadable from GitHub but is not searchable in the Firefox Add-ons marketplace.
 
 ## Development
 

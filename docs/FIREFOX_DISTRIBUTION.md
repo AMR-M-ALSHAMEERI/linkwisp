@@ -1,6 +1,6 @@
 # Firefox Self-Distribution
 
-This guide is for the LinkWisp maintainer. It describes preparation for Mozilla-signed self-distribution (the unlisted AMO channel). It does not make LinkWisp searchable in the Firefox Add-ons marketplace.
+This guide is for the LinkWisp maintainer. It describes Mozilla-signed self-distribution through the unlisted AMO channel. It does not make LinkWisp searchable in the Firefox Add-ons marketplace.
 
 ## Distribution model
 
@@ -68,3 +68,17 @@ Mozilla may sign automatically or select the submission for manual review. Do no
 8. Update public installation and privacy documentation before distribution.
 
 Do not modify the existing `v0.2.0` GitHub Release or move its tag. A signed Firefox artifact must be published through a separately approved immutable release decision.
+
+## Published Firefox v0.2.0
+
+The first signed Firefox package completed the full process above and is available from the separate [LinkWisp Firefox v0.2.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0).
+
+- Release tag: `firefox-v0.2.0`
+- Reviewed source commit: `d5768fc3a1145a857530ca711e489e19f0d38b94`
+- Mozilla-signed asset: `3560a728607a487a9469-0.2.0.xpi`
+- SHA-256: `a3fddf6473ca645f502fd91d4da9ea6fde0595db366254a80c9b710fd0fae4f1`
+- Checksum asset: `3560a728607a487a9469-0.2.0.xpi.sha256`
+- Distribution: unlisted/self-distributed
+- Acceptance: Mozilla validation, artifact comparison, and permanent ordinary-Firefox installation passed
+
+The release contains only the signed XPI and its checksum. The existing Chrome `v0.2.0` release remains unchanged and remains the repository's latest general release.

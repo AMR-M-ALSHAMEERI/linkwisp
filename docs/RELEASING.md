@@ -21,6 +21,8 @@ The current release workflow publishes only the tested Chrome archive. `pnpm zip
 
 For Mozilla self-distribution, follow [FIREFOX_DISTRIBUTION.md](FIREFOX_DISTRIBUTION.md). The dedicated `pnpm prepare:firefox-submission` command creates an unsigned Firefox upload, a complete Git-archived reviewer source package, review notes, and checksums from one clean commit. Do not use WXT's smaller automatic `*-sources.zip` as the Mozilla reviewer source because it omits the workspace lockfile and complete build instructions.
 
+After Mozilla returns a signed XPI, audit and test it before publication. Publish it under a separate annotated tag such as `firefox-v0.2.0` pointing to the exact source commit submitted for review. The Firefox release must contain only the unchanged Mozilla-signed XPI and its matching SHA-256 file. Do not move the tag, replace the signed asset, attach an unsigned build, or change the existing Chrome release.
+
 ## Prepare a release
 
 1. Decide the version number using semantic versioning: patch for compatible fixes, minor for compatible features, and major for breaking changes.
@@ -62,3 +64,12 @@ Get-Content .\linkwisp-0.2.0-chrome.zip.sha256
 ```
 
 The two hexadecimal hashes must match. A mismatch means the file is incomplete or different from the file produced by the release workflow.
+
+The same verification applies to a signed Firefox XPI:
+
+```powershell
+Get-FileHash .\3560a728607a487a9469-0.2.0.xpi -Algorithm SHA256
+Get-Content .\3560a728607a487a9469-0.2.0.xpi.sha256
+```
+
+For later Firefox versions, use Mozilla's downloaded filename exactly as provided.
