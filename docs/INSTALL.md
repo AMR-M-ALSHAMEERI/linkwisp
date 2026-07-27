@@ -87,18 +87,23 @@ Selecting **Delete** opens LinkWisp's branded destructive-action dialog. It expl
 
 ## Updating Chrome
 
-GitHub-installed Chrome extensions do not update automatically.
+GitHub-installed Chrome extensions do not install updates automatically. LinkWisp checks GitHub's official latest release at most once every 24 hours and shows a quiet indicator in **Settings** when a newer version is available. Select **Check updates** to refresh immediately.
 
-1. Export local history from the extension as a precaution.
-2. Download and extract the newest release over the existing extension folder.
-3. Open `chrome://extensions`.
-4. Find **LinkWisp** and select **Reload**.
+1. Select **Export backup** in the update card, or export under **Local backup**.
+2. Select **View release** and download the official Chrome ZIP.
+3. Extract the newest release over the existing extension folder.
+4. Open `chrome://extensions`.
+5. Find **LinkWisp** and select **Reload**.
 
 Browser-local storage normally survives a reload or code update. Export remains the safest backup.
 
 ## Updating Firefox
 
-The self-distributed Firefox package does not currently include an automatic package-update mechanism. Export local history as a precaution, download the newer Mozilla-signed XPI from the project's Firefox release, and install it through **Install Add-on From File**. A newer signed package with the same Gecko ID upgrades the existing installation while normally preserving browser-local storage.
+The self-distributed Firefox package does not install updates automatically. When update checking is enabled, LinkWisp reports a new version only after the matching `firefox-vX.Y.Z` GitHub release exists, so **View release** leads to the Mozilla-signed XPI rather than the Chrome package.
+
+Firefox asks for an optional technical-and-interaction data permission before the first update check. This permission covers the anonymous GitHub Releases request. If you decline it, only update notifications remain off; every core LinkWisp feature continues to work. You can select **Check updates** later to request the permission again.
+
+Export local history as a precaution, download the newer signed XPI from the Firefox release, and install it through **Install Add-on From File**. A newer signed package with the same Gecko ID upgrades the existing installation while normally preserving browser-local storage.
 
 ## Back up or move local history
 

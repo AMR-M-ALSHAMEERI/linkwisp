@@ -32,7 +32,8 @@ describe("browser-specific manifest", () => {
           id: FIREFOX_EXTENSION_ID,
           strict_min_version: FIREFOX_MIN_VERSION,
           data_collection_permissions: {
-            required: ["authenticationInfo", "browsingActivity"]
+            required: ["authenticationInfo", "browsingActivity"],
+            optional: ["technicalAndInteraction"]
           }
         },
         gecko_android: {

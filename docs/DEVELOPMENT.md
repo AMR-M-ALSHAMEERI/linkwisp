@@ -78,7 +78,7 @@ pnpm test
 
 This runs two complementary suites:
 
-- Extension unit tests run with Vitest and WXT's testing plugin. They cover URL cleaning, backup validation and merging, connection checks, API request construction, per-link credential selection, and API error handling.
+- Extension unit tests run with Vitest and WXT's testing plugin. They cover URL cleaning, backup validation and merging, connection checks, API request construction, per-link credential selection, API error handling, strict release validation, browser-aware update routing, timeouts, and update-cache behavior.
 - Worker integration tests run locally inside Cloudflare's Workers runtime through its Vitest integration. They apply the real D1 migrations to an isolated test database and cover authorization, creation validation, redirects, unavailable-link pages, editing, disabling, enabling, expiration, and deletion.
 
 Tests never contact the production Worker or production D1 database. The Worker suite receives a test-only access token and isolated local D1 binding from `vitest.config.ts`. It loads `test/wrangler.test.jsonc` instead of the deployment configuration, so Cloudflare's test runtime does not read `.dev.vars` or any real credential.
@@ -227,6 +227,23 @@ When the unpacked extension is reloaded, its installation listener clears LinkWi
 The Wisp Link overlay covers only a small central area, keeps the quiet margin untouched, and uses QR error-correction level H. Scanning remains the acceptance criterion; a visually attractive QR that scans unreliably must not be released.
 
 Motion is intentionally limited to 140–180 ms and never controls application logic. The `prefers-reduced-motion: reduce` media query reduces animation and transition durations to effectively instant changes.
+
+## Test update notifications
+
+Update checks use GitHub's public Releases API and never require a GitHub token.
+
+1. Build and reload both browser targets, then open **Settings**.
+2. Confirm the installed version comes from the generated manifest and the update card does not block popup startup.
+3. In Chrome, select **Check updates** and confirm the current stable release, available version, and last checked time appear.
+4. Close and reopen the popup and confirm the cached result is reused.
+5. In Firefox, decline the optional technical-and-interaction permission and confirm update checking stays off while link creation and history continue to work.
+6. Select **Check updates** again, approve the permission, and confirm Firefox checks only for a matching signed `firefox-vX.Y.Z` release.
+7. Disconnect the network and force a refresh. Confirm LinkWisp keeps a previously validated result when available and otherwise reports a non-blocking unavailable state.
+8. Confirm **Export backup** downloads the same validated local backup used by **Local backup**, without including the Worker access code.
+9. When an update is available, confirm the Settings navigation indicator is quiet, keyboard-accessible, and not shown in other states.
+10. Confirm **View release** opens only an allow-listed release under `github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/`.
+
+The 24-hour cache prevents unnecessary GitHub traffic. Manual refresh bypasses freshness only; it does not bypass release validation, the Firefox signed-release requirement, or the request timeout.
 
 ## Cloudflare deployment
 

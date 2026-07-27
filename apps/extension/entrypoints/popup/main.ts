@@ -25,6 +25,17 @@ import {
   deleteLinkConfirmation,
   type ConfirmationCopy
 } from "../../lib/confirmation";
+import {
+  FIREFOX_UPDATE_DATA_PERMISSION,
+  UPDATE_CACHE_KEY,
+  checkForUpdate,
+  freshUpdateCache,
+  hasFirefoxUpdateDataPermission,
+  normalizeUpdateCache,
+  updateCache,
+  updatePlatform,
+  type UpdateResult
+} from "../../lib/updates";
 
 const form = document.querySelector<HTMLFormElement>("#shorten-form")!;
 const destinationInput = document.querySelector<HTMLTextAreaElement>("#destination")!;
@@ -75,6 +86,19 @@ const aboutDialog = document.querySelector<HTMLDialogElement>("#about-dialog")!;
 const openAboutButton = document.querySelector<HTMLButtonElement>("#open-about")!;
 const closeAboutButton = document.querySelector<HTMLButtonElement>("#close-about")!;
 const aboutVersions = [...document.querySelectorAll<HTMLElement>("[data-about-version]")];
+const updateSection = document.querySelector<HTMLElement>(".update-section")!;
+const updateNavIndicator = document.querySelector<HTMLElement>("#update-nav-indicator")!;
+const updateStatePill = document.querySelector<HTMLElement>("#update-state-pill")!;
+const updateSummary = document.querySelector<HTMLElement>("#update-summary")!;
+const updateInstalledVersion = document.querySelector<HTMLElement>("#update-installed-version")!;
+const updateAvailableRow = document.querySelector<HTMLElement>("#update-available-row")!;
+const updateAvailableVersion = document.querySelector<HTMLElement>("#update-available-version")!;
+const updateLastChecked = document.querySelector<HTMLElement>("#update-last-checked")!;
+const updateBackupReminder = document.querySelector<HTMLElement>("#update-backup-reminder")!;
+const updateActions = document.querySelector<HTMLElement>(".update-actions")!;
+const checkUpdatesButton = document.querySelector<HTMLButtonElement>("#check-updates")!;
+const updateExportBackupButton = document.querySelector<HTMLButtonElement>("#update-export-backup")!;
+const viewUpdateReleaseButton = document.querySelector<HTMLButtonElement>("#view-update-release")!;
 const editDialog = document.querySelector<HTMLDialogElement>("#edit-dialog")!;
 const editForm = document.querySelector<HTMLFormElement>("#edit-form")!;
 const editShortUrl = document.querySelector<HTMLElement>("#edit-short-url")!;
@@ -97,8 +121,40 @@ let brandMarkPromise: Promise<HTMLImageElement> | undefined;
 let currentEditRecordKey = "";
 let editSaving = false;
 let resolveConfirmation: ((confirmed: boolean) => void) | undefined;
+let currentUpdateReleaseUrl = "";
 
 type AppView = "create" | "links" | "settings";
+
+const extensionManifest = browser.runtime.getManifest();
+const installedVersion = extensionManifest.version;
+const currentUpdatePlatform = updatePlatform(extensionManifest.manifest_version);
+
+type FirefoxDataPermissions = {
+  data_collection?: string[];
+};
+
+async function ensureUpdatePermission(manual: boolean): Promise<boolean> {
+  if (currentUpdatePlatform !== "firefox") return true;
+
+  try {
+    if (manual) {
+      const request = browser.permissions.request as unknown as (
+        permissions: FirefoxDataPermissions
+      ) => Promise<boolean>;
+
+      // Firefox requires this request to begin directly inside the user's click
+      // handler. Awaiting getAll() first loses the transient user activation.
+      return await request({
+        data_collection: [FIREFOX_UPDATE_DATA_PERMISSION]
+      });
+    }
+
+    const current = await browser.permissions.getAll();
+    return hasFirefoxUpdateDataPermission(current);
+  } catch {
+    return false;
+  }
+}
 
 function finishConfirmation(confirmed: boolean): void {
   const resolve = resolveConfirmation;
@@ -143,6 +199,168 @@ async function loadHistory(): Promise<LinkRecord[]> {
 async function saveHistory(records: LinkRecord[]): Promise<void> {
   await browser.storage.local.set({ linkHistory: records.slice(0, 200) });
   renderHistory(records);
+}
+
+function exactCheckedTime(timestamp: number): string {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(timestamp));
+}
+
+function formatLastChecked(timestamp: number): string {
+  const elapsedMs = Math.max(0, Date.now() - timestamp);
+  const elapsedMinutes = Math.floor(elapsedMs / 60_000);
+
+  if (elapsedMinutes < 1) return "Checked just now";
+  if (elapsedMinutes < 60) {
+    return `Checked ${elapsedMinutes} ${elapsedMinutes === 1 ? "minute" : "minutes"} ago`;
+  }
+
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  if (elapsedHours < 24) {
+    return `Checked ${elapsedHours} ${elapsedHours === 1 ? "hour" : "hours"} ago`;
+  }
+
+  return `Last checked: ${exactCheckedTime(timestamp)}`;
+}
+
+function renderUpdatePermissionRequired(manual: boolean): void {
+  currentUpdateReleaseUrl = "";
+  updateSection.dataset.state = "permission";
+  updateNavIndicator.classList.add("hidden");
+  updateAvailableRow.classList.add("hidden");
+  updateBackupReminder.classList.add("hidden");
+  updateExportBackupButton.classList.add("hidden");
+  viewUpdateReleaseButton.classList.add("hidden");
+  updateLastChecked.classList.add("hidden");
+  updateActions.dataset.state = "permission";
+  updateStatePill.dataset.state = "unknown";
+  updateStatePill.textContent = "Checks off";
+  updateSummary.dataset.kind = manual ? "error" : "";
+  updateSummary.textContent = manual
+    ? "Update checks remain off. Normal LinkWisp features are still available."
+    : "Firefox update checks are off until you allow optional technical and interaction data.";
+  checkUpdatesButton.textContent = "Allow update checks";
+  checkUpdatesButton.removeAttribute("aria-busy");
+}
+
+function renderUpdateResult(result: UpdateResult, manual: boolean): void {
+  const available = result.kind === "available"
+    && typeof result.latestVersion === "string"
+    && typeof result.releaseUrl === "string";
+
+  currentUpdateReleaseUrl = available ? result.releaseUrl! : "";
+  updateSection.dataset.state = result.kind;
+  updateNavIndicator.classList.toggle("hidden", !available);
+  updateAvailableRow.classList.toggle("hidden", !available);
+  updateBackupReminder.classList.toggle("hidden", !available);
+  updateExportBackupButton.classList.toggle("hidden", !available);
+  viewUpdateReleaseButton.classList.toggle("hidden", !available);
+  updateActions.dataset.state = available ? "available" : result.kind;
+  updateInstalledVersion.textContent = result.installedVersion;
+  updateAvailableVersion.textContent = available ? result.latestVersion! : "";
+  updateLastChecked.textContent = formatLastChecked(result.checkedAt);
+  updateLastChecked.title = `Last checked: ${exactCheckedTime(result.checkedAt)}`;
+  updateLastChecked.classList.remove("hidden");
+  checkUpdatesButton.removeAttribute("aria-busy");
+
+  updateStatePill.dataset.state = result.kind;
+  updateSummary.dataset.kind = "";
+
+  if (available) {
+    updateStatePill.textContent = "Update available";
+    updateSummary.textContent = `LinkWisp v${result.latestVersion} is ready for ${result.platform === "firefox" ? "Firefox" : "Chrome"}.`;
+    updateSummary.classList.remove("hidden");
+    checkUpdatesButton.textContent = "Check again";
+    return;
+  }
+
+  if (result.kind === "current") {
+    updateStatePill.textContent = "Up to date";
+    updateSummary.textContent = "LinkWisp is up to date.";
+    updateSummary.classList.add("hidden");
+    checkUpdatesButton.textContent = "Check again";
+    return;
+  }
+
+  updateStatePill.textContent = manual ? "Check unavailable" : "Stable channel";
+  updateStatePill.dataset.state = manual ? "unavailable" : "unknown";
+  updateSummary.textContent = manual
+    ? "Could not check for updates right now. Normal LinkWisp features are still available."
+    : "LinkWisp checks the official GitHub release once per day.";
+  updateSummary.classList.remove("hidden");
+  checkUpdatesButton.textContent = manual ? "Try again" : "Check updates";
+  if (manual) updateSummary.dataset.kind = "error";
+}
+
+async function refreshUpdate(force: boolean, manual: boolean): Promise<void> {
+  if (!await ensureUpdatePermission(manual)) {
+    await browser.storage.local.remove(UPDATE_CACHE_KEY);
+    renderUpdatePermissionRequired(manual);
+    return;
+  }
+
+  const stored = await browser.storage.local.get(UPDATE_CACHE_KEY);
+  const storedValue = stored[UPDATE_CACHE_KEY];
+  const validStored = normalizeUpdateCache(
+    storedValue,
+    installedVersion,
+    currentUpdatePlatform
+  );
+  const fresh = force
+    ? null
+    : freshUpdateCache(storedValue, installedVersion, currentUpdatePlatform);
+
+  if (fresh) {
+    renderUpdateResult(fresh, manual);
+    return;
+  }
+
+  if (manual) {
+    updateSection.dataset.state = "checking";
+    updateSummary.textContent = "Checking the official GitHub release...";
+    updateSummary.classList.remove("hidden");
+    updateSummary.dataset.kind = "";
+    checkUpdatesButton.textContent = "Checking…";
+    checkUpdatesButton.setAttribute("aria-busy", "true");
+  }
+  checkUpdatesButton.disabled = true;
+
+  try {
+    const result = await checkForUpdate({
+      installedVersion,
+      platform: currentUpdatePlatform
+    });
+    await browser.storage.local.set({
+      [UPDATE_CACHE_KEY]: updateCache(result)
+    });
+    renderUpdateResult(result, manual);
+  } catch {
+    if (validStored) {
+      renderUpdateResult(validStored, false);
+    } else {
+      const unavailable: UpdateResult = {
+        kind: "unavailable",
+        installedVersion,
+        checkedAt: Date.now(),
+        platform: currentUpdatePlatform
+      };
+      await browser.storage.local.set({
+        [UPDATE_CACHE_KEY]: updateCache(unavailable)
+      });
+      renderUpdateResult(unavailable, false);
+    }
+    if (manual) {
+      updateSummary.textContent = "Could not check for updates right now. Normal LinkWisp features are still available.";
+      updateSummary.classList.remove("hidden");
+      updateSummary.dataset.kind = "error";
+      checkUpdatesButton.textContent = "Try again";
+      checkUpdatesButton.removeAttribute("aria-busy");
+    }
+  } finally {
+    checkUpdatesButton.disabled = false;
+  }
 }
 
 function linkState(record: LinkRecord): "active" | "disabled" | "expired" {
@@ -395,7 +613,8 @@ function selectedExpiration(): string | null {
 }
 
 async function initialize(): Promise<void> {
-  for (const version of aboutVersions) version.textContent = browser.runtime.getManifest().version;
+  for (const version of aboutVersions) version.textContent = installedVersion;
+  updateInstalledVersion.textContent = installedVersion;
   const [settings, history, tabs, session, onboarding] = await Promise.all([
     loadSettings(),
     loadHistory(),
@@ -426,6 +645,7 @@ async function initialize(): Promise<void> {
     ? "create"
     : rememberedView);
   if (onboarding.onboardingComplete !== true) showOnboarding(settings);
+  void refreshUpdate(false, false);
 }
 
 expirationSelect.addEventListener("change", () => {
@@ -439,6 +659,12 @@ for (const button of navButtons) {
 }
 
 toastCloseButton.addEventListener("click", () => setStatus(""));
+
+checkUpdatesButton.addEventListener("click", () => refreshUpdate(true, true));
+viewUpdateReleaseButton.addEventListener("click", async () => {
+  if (!currentUpdateReleaseUrl) return;
+  await browser.tabs.create({ url: currentUpdateReleaseUrl });
+});
 
 openAboutButton.addEventListener("click", () => aboutDialog.showModal());
 closeAboutButton.addEventListener("click", () => aboutDialog.close());
@@ -728,7 +954,7 @@ confirmationDialog.addEventListener("click", (event) => {
   if (outside) finishConfirmation(false);
 });
 
-exportBackupButton.addEventListener("click", async () => {
+async function exportLocalBackup(): Promise<void> {
   try {
     const history = await loadHistory();
     if (history.length === 0) throw new Error("There are no local links to export.");
@@ -744,7 +970,10 @@ exportBackupButton.addEventListener("click", async () => {
   } catch (error) {
     setStatus(error instanceof Error ? error.message : "The backup could not be exported.", "error");
   }
-});
+}
+
+exportBackupButton.addEventListener("click", exportLocalBackup);
+updateExportBackupButton.addEventListener("click", exportLocalBackup);
 
 importBackupButton.addEventListener("click", () => backupFileInput.click());
 

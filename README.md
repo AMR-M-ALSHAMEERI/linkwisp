@@ -59,6 +59,8 @@ The repository is public for learning and portfolio review, while every deployed
 - **Safer destructive actions:** use consistent confirmation dialogs for local history clearing and permanent online deletion.
 - **Cross-browser engineering:** ship Chrome Manifest V3 and continuously build and strictly lint a Firefox Manifest V2 target.
 
+The next release is being prepared with privacy-aware update notifications: a cached check of the official GitHub release, browser-specific Chrome/Firefox download routing, backup-before-update guidance, last checked time, and a quiet Settings indicator. It remains a notification—the user always chooses whether to download and install an update.
+
 ## Architecture
 
 <p align="center">
@@ -78,7 +80,7 @@ Your production access code is a Cloudflare secret—it is never committed, pack
 | Persistence | Cloudflare D1 migrations for mappings, expiration, state, and management tokens |
 | Local state | Browser storage for history, favorites, settings, and per-link management data |
 | Security | Cloudflare secrets, timing-safe credential comparison, restricted status pages, no credential in releases |
-| Quality | 45 automated tests, generated Worker binding checks, production builds, strict Mozilla lint |
+| Quality | 61 automated tests, generated Worker binding checks, production builds, strict Mozilla lint |
 | Delivery | GitHub Actions CI, version-gated Chrome ZIP, Mozilla-signed Firefox XPI, offline installer, SHA-256 checksums |
 
 ### Request and redirect boundaries
@@ -118,7 +120,7 @@ docs/             Installation, deployment, development, and release guides
 
 ## Privacy
 
-LinkWisp collects no analytics. History, favorites, search terms, preferences, and generated QR images remain on the device. The configured Worker receives only information required to create or manage a mapping. Public unavailable-link pages reveal no destination, load no external assets, run no JavaScript, and are marked against caching and indexing.
+LinkWisp collects no analytics. History, favorites, search terms, preferences, and generated QR images remain on the device. The configured Worker receives only information required to create or manage a mapping. The upcoming update check sends an anonymous request to GitHub's public Releases API without LinkWisp history, credentials, or a user identifier; Firefox makes this request only with optional technical-and-interaction consent. Public unavailable-link pages reveal no destination, load no external assets, run no JavaScript, and are marked against caching and indexing.
 
 Backups intentionally exclude the main service access code, but they contain per-link management keys and should be stored securely. See the complete [privacy policy](PRIVACY.md) and deployment guide for the trust boundaries.
 

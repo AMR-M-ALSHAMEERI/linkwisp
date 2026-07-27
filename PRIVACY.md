@@ -1,6 +1,6 @@
 # LinkWisp Privacy Policy
 
-Effective date: July 27, 2026
+Effective date: July 28, 2026
 
 LinkWisp is a local-first, self-hosted browser extension. It does not provide a shared LinkWisp account, advertising service, or analytics platform. Each user chooses and controls the Cloudflare Worker service to which the extension connects.
 
@@ -13,7 +13,8 @@ LinkWisp stores the following information in browser-local storage:
 - favorites and search-related interface state;
 - the configured Worker address and access code;
 - private per-link management tokens;
-- extension preferences and onboarding state.
+- extension preferences and onboarding state;
+- validated update-check metadata, including the latest version, official release address, and last checked time.
 
 History search, favorite changes, QR generation, and normal interface use occur locally. LinkWisp does not transmit those actions to the developer.
 
@@ -28,6 +29,14 @@ Editing, disabling, enabling, or deleting a link sends the relevant short code, 
 Testing connection settings sends the Worker address request and entered access code to the selected Worker without creating or reading a link mapping.
 
 LinkWisp does not send local history, favorites, search terms, backup files, or generated QR images to an external QR or analytics service.
+
+## Data sent when checking for updates
+
+LinkWisp can make an anonymous request to GitHub's public Releases API to compare the installed version with the latest LinkWisp release. The request does not include LinkWisp history, destinations, aliases, Worker addresses, access codes, management tokens, backup contents, or a LinkWisp user identifier.
+
+GitHub receives the ordinary network information required to serve the request, such as the requester's IP address and standard HTTP metadata, under GitHub's privacy terms. LinkWisp validates the repository, version, and release address before displaying or locally caching the result. A successful result is reused for 24 hours unless the user selects **Check updates**.
+
+In Firefox, update checking uses Mozilla's optional `technicalAndInteraction` data-transmission permission. Declining that permission disables update checks only; shortening, history, backup, and all other core features continue to work. Chrome does not provide an equivalent runtime data-category prompt.
 
 ## Online redirect data
 
@@ -55,7 +64,7 @@ Clearing local history does not delete online mappings and removes the local man
 
 LinkWisp does not sell personal information. The project contains no advertising SDK, telemetry SDK, or developer-operated analytics endpoint.
 
-Information is transmitted only to the service selected by the user and to infrastructure providers required to complete that request.
+Information is transmitted only to the service selected by the user, GitHub when update checking is enabled, and infrastructure providers required to complete those requests.
 
 ## Security
 
