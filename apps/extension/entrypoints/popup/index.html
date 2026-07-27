@@ -19,7 +19,10 @@
       <nav class="app-nav" aria-label="LinkWisp sections">
         <button class="nav-button" type="button" data-view="create" aria-selected="true">Create</button>
         <button class="nav-button" type="button" data-view="links" aria-selected="false">Links <span id="links-count">0</span></button>
-        <button class="nav-button" type="button" data-view="settings" aria-selected="false">Settings</button>
+        <button class="nav-button" type="button" data-view="settings" aria-selected="false">
+          Settings
+          <span id="update-nav-indicator" class="update-nav-indicator hidden" role="status" aria-label="Update available">!</span>
+        </button>
       </nav>
 
       <section class="create-card view-panel" data-view-panel="create" aria-labelledby="create-heading">
@@ -76,6 +79,31 @@
           <button id="open-onboarding" class="setup-guide-button" type="button">Run setup guide</button>
         </div>
       </details>
+
+      <section class="update-section view-panel hidden" data-view-panel="settings" aria-labelledby="update-heading">
+        <div class="section-heading">
+          <h2 id="update-heading">Extension update</h2>
+          <span id="update-state-pill" class="update-state-pill" data-state="unknown">Stable channel</span>
+        </div>
+        <p id="update-summary" class="update-summary" role="status" aria-live="polite">LinkWisp checks the official GitHub release once per day.</p>
+        <dl class="update-versions">
+          <div>
+            <dt>Installed</dt>
+            <dd>v<span id="update-installed-version">0.2.0</span></dd>
+          </div>
+          <div id="update-available-row" class="hidden">
+            <dt>Available</dt>
+            <dd>v<span id="update-available-version"></span></dd>
+          </div>
+        </dl>
+        <p id="update-last-checked" class="update-last-checked hidden"></p>
+        <p id="update-backup-reminder" class="update-backup-reminder hidden">Export a local backup before updating. It includes private per-link management keys, but never your main access code.</p>
+        <div class="update-actions">
+          <button id="check-updates" class="secondary" type="button">Check updates</button>
+          <button id="update-export-backup" class="secondary hidden" type="button">Export backup</button>
+          <button id="view-update-release" class="hidden" type="button">View release</button>
+        </div>
+      </section>
 
       <section class="backup-section view-panel hidden" data-view-panel="settings" aria-labelledby="backup-heading">
         <h2 id="backup-heading">Local backup</h2>

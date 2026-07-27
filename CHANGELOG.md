@@ -2,6 +2,20 @@
 
 All notable LinkWisp changes are recorded here. Versions follow semantic versioning.
 
+## Unreleased
+
+### Added
+
+- Browser-aware update notifications with a 24-hour cache, manual refresh, installed/latest version details, and last checked time
+- Chrome routing to the official stable release and Firefox routing only to a matching Mozilla-signed release
+- A backup-before-update action and quiet Settings indicator for available updates
+
+### Security and privacy
+
+- Strict semantic-version, repository, release-state, and release-URL validation before an update is announced
+- Request timeout and safe unavailable-state handling without GitHub credentials or LinkWisp user data
+- Optional Firefox technical-and-interaction consent so declining update checks never disables core functionality
+
 ## 0.2.0 - 2026-07-26
 
 ### Added

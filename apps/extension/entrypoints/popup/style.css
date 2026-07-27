@@ -75,6 +75,14 @@ body {
 .nav-button[aria-selected="true"] { background: var(--green); color: white; box-shadow: 0 5px 13px #215f4229; transform: translateY(-1px); }
 .nav-button span { display: inline-block; min-width: 16px; margin-left: 3px; border-radius: 999px; background: #dfece4; color: #486253; font-size: 8px; padding: 2px 4px; }
 .nav-button[aria-selected="true"] span { background: #ffffff26; color: white; }
+.nav-button .update-nav-indicator {
+  min-width: 15px;
+  background: #f1b84a;
+  color: #593b00;
+  font-weight: 900;
+  line-height: 1;
+}
+.nav-button[aria-selected="true"] .update-nav-indicator { background: #ffd77d; color: #533700; }
 
 .eyebrow {
   margin: 0 0 2px;
@@ -90,6 +98,7 @@ h2 { margin: 0; color: #1d432e; font-size: 15px; letter-spacing: -0.01em; }
 
 .create-card,
 .history-section,
+.update-section,
 .backup-section,
 .about-entry,
 .settings {
@@ -102,6 +111,7 @@ h2 { margin: 0; color: #1d432e; font-size: 15px; letter-spacing: -0.01em; }
 
 .create-card,
 .history-section,
+.update-section,
 .backup-section { padding: 15px; }
 
 .card-heading,
@@ -202,6 +212,87 @@ button:disabled { cursor: wait; opacity: 0.6; }
 }
 .setup-guide-button:active { transform: translateY(1px); }
 
+.update-summary {
+  min-height: 29px;
+  margin: 8px 0 0;
+  color: #5b6d63;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.update-section[data-state="current"] .update-summary { display: none; }
+.update-summary[data-kind="success"] { color: #247047; }
+.update-summary[data-kind="error"] { color: #a1342b; }
+.update-state-pill {
+  border-radius: 999px;
+  background: #e6efe9;
+  color: #50675a;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 4px 7px;
+}
+.update-state-pill[data-state="available"] { background: #fff0bd; color: #765500; }
+.update-state-pill[data-state="current"] { background: #dff3e7; color: #24623f; }
+.update-state-pill[data-state="unavailable"] { background: #f3e9e6; color: #84483f; }
+.update-versions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 10px 0 0;
+}
+.update-section[data-state="current"] .update-versions {
+  grid-template-columns: 1fr;
+  margin-top: 9px;
+}
+.update-section[data-state="current"] .update-versions div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-height: 0;
+  padding: 7px 10px;
+}
+.update-section[data-state="current"] .update-versions dd { margin: 0; }
+.update-versions div {
+  border: 1px solid #e0e9e3;
+  border-radius: 11px;
+  background: #fbfdfb;
+  padding: 8px 9px;
+}
+.update-versions dt { color: #7a8980; font-size: 8px; font-weight: 750; text-transform: uppercase; }
+.update-versions dd { margin: 3px 0 0; color: #244d35; font-size: 11px; font-weight: 850; }
+.update-last-checked { margin: 8px 0 0; color: #7a8980; font-size: 9px; }
+.update-backup-reminder {
+  margin: 9px 0 0;
+  border: 1px solid #e5d8ac;
+  border-radius: 10px;
+  background: #fff9e7;
+  color: #6c5b25;
+  font-size: 9px;
+  line-height: 1.45;
+  padding: 8px 9px;
+}
+.update-actions {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: 1fr;
+}
+.update-actions[data-state="available"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.update-actions button { margin-top: 10px; }
+.update-actions[data-state="available"] #view-update-release { grid-column: 1 / -1; }
+.update-section[data-state="current"] .update-actions button {
+  margin-top: 8px;
+  padding-block: 8px;
+}
+.update-section[data-state="checking"] #check-updates::before {
+  display: inline-block;
+  margin-right: 6px;
+  content: "↻";
+  animation: update-spin 700ms linear infinite;
+}
+
+@keyframes update-spin {
+  to { transform: rotate(360deg); }
+}
+
 .text-button {
   width: auto;
   margin: 0;
@@ -251,6 +342,11 @@ button:disabled { cursor: wait; opacity: 0.6; }
   text-align: left;
 }
 .about-trigger:hover { background: #f7faf7; box-shadow: none; }
+.about-trigger:focus-visible {
+  outline: none;
+  background: #f7faf7;
+  box-shadow: inset 0 0 0 3px #8de0b280;
+}
 .about-trigger strong,
 .about-trigger small { display: block; }
 .about-trigger strong { font-size: 11px; }
