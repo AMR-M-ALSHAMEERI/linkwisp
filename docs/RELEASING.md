@@ -4,7 +4,7 @@ This guide is for project maintainers. End users should follow [INSTALL.md](INST
 
 ## What the automation does
 
-Every push and pull request to `main` runs type checks, automated tests, Chrome and Worker production builds, and a strict Mozilla lint of the Firefox build. Pushing a version tag such as `v0.2.0` starts the release workflow, which:
+Every push and pull request to `main` runs type checks, automated tests, Chrome and Worker production builds, and a strict Mozilla lint of the Firefox build. Pushing a version tag such as `v0.3.0` starts the release workflow, which:
 
 1. Installs the exact dependencies from `pnpm-lock.yaml`.
 2. Runs all TypeScript checks.
@@ -21,7 +21,7 @@ The current release workflow publishes only the tested Chrome archive. `pnpm zip
 
 For Mozilla self-distribution, follow [FIREFOX_DISTRIBUTION.md](FIREFOX_DISTRIBUTION.md). The dedicated `pnpm prepare:firefox-submission` command creates an unsigned Firefox upload, a complete Git-archived reviewer source package, review notes, and checksums from one clean commit. Do not use WXT's smaller automatic `*-sources.zip` as the Mozilla reviewer source because it omits the workspace lockfile and complete build instructions.
 
-After Mozilla returns a signed XPI, audit and test it before publication. Publish it under a separate annotated tag such as `firefox-v0.2.0` pointing to the exact source commit submitted for review. The Firefox release must contain only the unchanged Mozilla-signed XPI and its matching SHA-256 file. Do not move the tag, replace the signed asset, attach an unsigned build, or change the existing Chrome release.
+After Mozilla returns a signed XPI, audit and test it before publication. Publish it under a separate annotated tag such as `firefox-v0.3.0` pointing to the exact source commit submitted for review. The Firefox release must contain only the unchanged Mozilla-signed XPI and its matching SHA-256 file. Do not move the tag, replace the signed asset, attach an unsigned build, or change an existing release.
 
 ## Prepare a release
 
@@ -38,18 +38,18 @@ pnpm test
 pnpm build
 pnpm lint:firefox
 pnpm release
-pnpm --filter @linkwisp/extension verify:release-version v0.2.0
+pnpm --filter @linkwisp/extension verify:release-version v0.3.0
 ```
 
-Replace `v0.2.0` with the version being prepared. Inspect the ZIP under `apps/extension/.output/` and test it in a clean Chrome profile before publishing.
+Replace `v0.3.0` with the version being prepared. Inspect the ZIP under `apps/extension/.output/` and test it in a clean Chrome profile before publishing.
 
 ## Publish a release
 
 Commit and push the prepared version first. Creating and pushing the tag is the publishing trigger:
 
 ```bash
-git tag -a v0.2.0 -m "LinkWisp v0.2.0"
-git push origin v0.2.0
+git tag -a v0.3.0 -m "LinkWisp v0.3.0"
+git push origin v0.3.0
 ```
 
 Do not reuse or move a published version tag. If a release needs a correction, prepare a new patch version instead. Monitor the **Actions** page, then confirm the GitHub Release contains one ZIP and its matching `.sha256` file.
@@ -59,8 +59,8 @@ Do not reuse or move a published version tag. If a release needs a correction, p
 On PowerShell, a user or maintainer can compare the downloaded ZIP with its published checksum:
 
 ```powershell
-Get-FileHash .\linkwisp-0.2.0-chrome.zip -Algorithm SHA256
-Get-Content .\linkwisp-0.2.0-chrome.zip.sha256
+Get-FileHash .\linkwisp-0.3.0-chrome.zip -Algorithm SHA256
+Get-Content .\linkwisp-0.3.0-chrome.zip.sha256
 ```
 
 The two hexadecimal hashes must match. A mismatch means the file is incomplete or different from the file produced by the release workflow.
@@ -68,8 +68,8 @@ The two hexadecimal hashes must match. A mismatch means the file is incomplete o
 The same verification applies to a signed Firefox XPI:
 
 ```powershell
-Get-FileHash .\3560a728607a487a9469-0.2.0.xpi -Algorithm SHA256
-Get-Content .\3560a728607a487a9469-0.2.0.xpi.sha256
+Get-FileHash .\3560a728607a487a9469-0.3.0.xpi -Algorithm SHA256
+Get-Content .\3560a728607a487a9469-0.3.0.xpi.sha256
 ```
 
 For later Firefox versions, use Mozilla's downloaded filename exactly as provided.

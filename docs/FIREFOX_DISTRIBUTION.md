@@ -69,6 +69,8 @@ Mozilla may sign automatically or select the submission for manual review. Do no
 
 Do not modify the existing `v0.2.0` GitHub Release or move its tag. A signed Firefox artifact must be published through a separately approved immutable release decision.
 
+For `v0.3.0`, prepare and submit the exact clean release commit, audit and test the returned signed XPI, then publish it under the separate immutable tag `firefox-v0.3.0`. Publish that signed Firefox release before making the normal `v0.3.0` Chrome release the latest stable release, so Firefox update routing never points to an unavailable package.
+
 ## Published Firefox v0.2.0
 
 The first signed Firefox package completed the full process above and is available from the separate [LinkWisp Firefox v0.2.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0).
@@ -81,4 +83,4 @@ The first signed Firefox package completed the full process above and is availab
 - Distribution: unlisted/self-distributed
 - Acceptance: Mozilla validation, artifact comparison, and permanent ordinary-Firefox installation passed
 
-The release contains only the signed XPI and its checksum. The existing Chrome `v0.2.0` release remains unchanged and remains the repository's latest general release.
+The release contains only the signed XPI and its checksum. At the time it was published, the existing Chrome `v0.2.0` release remained unchanged and remained the repository's latest general release.

@@ -1,6 +1,6 @@
 # LinkWisp Privacy Policy
 
-Effective date: July 28, 2026
+Effective date: July 30, 2026
 
 LinkWisp is a local-first, self-hosted browser extension. It does not provide a shared LinkWisp account, advertising service, or analytics platform. Each user chooses and controls the Cloudflare Worker service to which the extension connects.
 

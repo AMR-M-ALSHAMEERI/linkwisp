@@ -2,7 +2,7 @@
 
 This guide is for users who do not need to read or build the source code.
 
-> Chrome users should download the newest `linkwisp-X.Y.Z-chrome.zip` from the repository's [latest release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest). Firefox users should download the signed `.xpi` from the separate [Firefox v0.2.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0). Do not use GitHub's automatically generated source archives.
+> Chrome users should download the newest `linkwisp-X.Y.Z-chrome.zip` from the repository's [latest release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest). Firefox users should download the signed `.xpi` from the separate [Firefox v0.3.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.3.0). Do not use GitHub's automatically generated source archives.
 
 The Chrome package is an unpacked-extension ZIP. The Firefox package is a Mozilla-signed, permanently installable XPI distributed through Mozilla's unlisted channel. It is not searchable in the Firefox Add-ons marketplace.
 
@@ -62,8 +62,8 @@ Do not delete or move the extracted folder while the extension is installed.
 
 ## Firefox
 
-1. Open the [LinkWisp Firefox v0.2.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0).
-2. Download `3560a728607a487a9469-0.2.0.xpi` and its matching `.sha256` file.
+1. Open the [LinkWisp Firefox v0.3.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.3.0).
+2. Download its Mozilla-signed `.xpi` and matching `.sha256` file.
 3. Open Firefox and enter `about:addons` in the address bar.
 4. Open the gear menu and choose **Install Add-on From File**.
 5. Select the downloaded XPI and approve the requested permissions.
