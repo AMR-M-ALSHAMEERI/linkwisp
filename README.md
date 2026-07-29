@@ -18,7 +18,7 @@
 <p align="center">
   <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest">Chrome download</a>
   ·
-  <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0">Firefox download</a>
+  <a href="https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.3.0">Firefox download</a>
   ·
   <a href="docs/INSTALL.md">Install</a>
   ·
@@ -49,7 +49,7 @@ Most URL shorteners make link management, history, and analytics part of a third
 
 The repository is public for learning and portfolio review, while every deployed service remains controlled by its owner.
 
-## What v0.2.0 delivers
+## What v0.3.0 delivers
 
 - **Fast creation:** shorten the current tab, remove common tracking parameters, choose an alias and expiration, and copy the result.
 - **Lifecycle management:** edit destinations and expiration, disable or re-enable links, and permanently delete mappings.
@@ -58,8 +58,7 @@ The repository is public for learning and portfolio review, while every deployed
 - **Clear failure states:** show branded, privacy-safe pages for disabled, expired, deleted, and unknown links.
 - **Safer destructive actions:** use consistent confirmation dialogs for local history clearing and permanent online deletion.
 - **Cross-browser engineering:** ship Chrome Manifest V3 and continuously build and strictly lint a Firefox Manifest V2 target.
-
-The next release is being prepared with privacy-aware update notifications: a cached check of the official GitHub release, browser-specific Chrome/Firefox download routing, backup-before-update guidance, last checked time, and a quiet Settings indicator. It remains a notification—the user always chooses whether to download and install an update.
+- **Privacy-aware update notices:** check the official GitHub release through a 24-hour cache, route each browser to its correct package, and keep installation under the user's control.
 
 ## Architecture
 
@@ -92,11 +91,11 @@ Your production access code is a Cloudflare secret—it is never committed, pack
 
 ## Install or self-host
 
-The [latest GitHub Release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest) provides the Chrome ZIP and its SHA-256 checksum. The archive includes an offline `INSTALL.html`. Firefox users can download the separately audited [Mozilla-signed Firefox v0.2.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.2.0). The complete walkthrough for both browsers is available in [docs/INSTALL.md](docs/INSTALL.md).
+The [latest GitHub Release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/latest) provides the Chrome ZIP and its SHA-256 checksum. The archive includes an offline `INSTALL.html`. Firefox users can download the separately audited [Mozilla-signed Firefox v0.3.0 release](https://github.com/AMR-M-ALSHAMEERI/linkwisp/releases/tag/firefox-v0.3.0). The complete walkthrough for both browsers is available in [docs/INSTALL.md](docs/INSTALL.md).
 
 LinkWisp is a self-hosted tool, not a shared public shortening account. To create links, deploy the Worker and D1 database to your own Cloudflare account by following [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md), then enter that Worker address and your private access code during onboarding. A custom domain is optional; a `workers.dev` address is sufficient.
 
-The Firefox XPI passed strict Mozilla linting, Mozilla's automatic validation and signing, a local artifact comparison, and permanent-installation testing in ordinary Firefox. It is self-distributed through Mozilla's unlisted channel, so it is downloadable from GitHub but is not searchable in the Firefox Add-ons marketplace.
+The Firefox XPI is published only after strict Mozilla linting, Mozilla validation and signing, local artifact comparison, and permanent-installation testing in ordinary Firefox. It is self-distributed through Mozilla's unlisted channel, so it is downloadable from GitHub but is not searchable in the Firefox Add-ons marketplace.
 
 ## Development
 
@@ -120,7 +119,7 @@ docs/             Installation, deployment, development, and release guides
 
 ## Privacy
 
-LinkWisp collects no analytics. History, favorites, search terms, preferences, and generated QR images remain on the device. The configured Worker receives only information required to create or manage a mapping. The upcoming update check sends an anonymous request to GitHub's public Releases API without LinkWisp history, credentials, or a user identifier; Firefox makes this request only with optional technical-and-interaction consent. Public unavailable-link pages reveal no destination, load no external assets, run no JavaScript, and are marked against caching and indexing.
+LinkWisp collects no analytics. History, favorites, search terms, preferences, and generated QR images remain on the device. The configured Worker receives only information required to create or manage a mapping. The update check sends an anonymous request to GitHub's public Releases API without LinkWisp history, credentials, or a user identifier; Firefox makes this request only with optional technical-and-interaction consent. Public unavailable-link pages reveal no destination, load no external assets, run no JavaScript, and are marked against caching and indexing.
 
 Backups intentionally exclude the main service access code, but they contain per-link management keys and should be stored securely. See the complete [privacy policy](PRIVACY.md) and deployment guide for the trust boundaries.
 

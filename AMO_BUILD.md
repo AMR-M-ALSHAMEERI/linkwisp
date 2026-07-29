@@ -5,7 +5,7 @@ This file accompanies the source archive submitted to addons.mozilla.org for the
 ## Submitted extension
 
 - Add-on: LinkWisp
-- Version: `0.2.0`
+- Version: `0.3.0`
 - Gecko ID: `linkwisp@amr-m-alshameeri`
 - Target: Firefox Manifest V2
 - Distribution: Mozilla-signed self-distribution (unlisted)
@@ -39,7 +39,7 @@ pnpm zip:firefox
 The unsigned Firefox package is generated at:
 
 ```text
-apps/extension/.output/linkwispextension-0.2.0-firefox.zip
+apps/extension/.output/linkwispextension-0.3.0-firefox.zip
 ```
 
 The unpacked build used to create it is:
@@ -111,6 +111,8 @@ The reviewer can then create, edit, disable, enable, delete, search, favorite, e
 Core shortening sends the selected destination URL, optional alias, expiration, and entered access code to the user-configured Worker. Management requests send the short-code record and its per-link management token to that same Worker.
 
 The manifest therefore declares Mozilla's required `browsingActivity` and `authenticationInfo` categories. Link history, favorites, search terms, preferences, backups, and QR generation remain local. LinkWisp contains no advertising, telemetry, click analytics, remote code, or third-party QR service.
+
+The optional update notification sends an anonymous request to GitHub's public Releases API no more than once per 24-hour cache period unless the user requests a refresh. It sends no LinkWisp history, destination, Worker address, access code, management token, backup content, or user identifier. Firefox declares `technicalAndInteraction` as optional and performs no update request until the user grants it; declining leaves every core feature available.
 
 See `PRIVACY.md` for the complete public privacy policy.
 

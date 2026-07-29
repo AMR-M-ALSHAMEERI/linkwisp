@@ -2,13 +2,18 @@
 
 All notable LinkWisp changes are recorded here. Versions follow semantic versioning.
 
-## Unreleased
+## 0.3.0 - 2026-07-30
 
 ### Added
 
 - Browser-aware update notifications with a 24-hour cache, manual refresh, installed/latest version details, and last checked time
 - Chrome routing to the official stable release and Firefox routing only to a matching Mozilla-signed release
 - A backup-before-update action and quiet Settings indicator for available updates
+
+### Changed
+
+- Made the current-version state compact and the available-update state more prominent
+- Added contextual checking, retry, consent, and refresh labels plus a visible About-row keyboard focus indicator
 
 ### Security and privacy
 
